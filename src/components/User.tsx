@@ -1,49 +1,31 @@
 import React from 'react';
+import Qualitie from './qualitie';
+import BookMark from './bookmark';
+import { StateData } from '../App';
 
-type qualitiesData = {
-  _id: string;
-  name: string;
-  color: string;
-};
-
-type professionData = {
-  _id: string;
-  name: string;
-};
-
-type UsersProps = {
-  _id: string;
-  name: string;
-  qualities: qualitiesData[];
-  profession: professionData;
-  completedMeetings: number;
-  rate: number;
+export type UserProps = {
+  user: StateData;
   onDelete: (userId: string) => void;
+  onToggleMark: (userId: string) => void;
 };
 
-const User: React.FC<UsersProps> = ({
-  _id,
-  name,
-  qualities,
-  profession,
-  completedMeetings,
-  rate,
-  onDelete,
-}) => {
+const User: React.FC<UserProps> = ({ user, onDelete, onToggleMark }) => {
+  const { _id, name, qualities, profession, completedMeetings, rate, bookmark } = user;
   return (
     <>
       <tr>
         <td>{name}</td>
         <td>
-          {qualities.map(({ _id, name, color }) => (
-            <span key={_id} className={'badge m-1 bg-' + color}>
-              {name}
-            </span>
+          {qualities.map((qualitie: any) => (
+            <Qualitie key={qualitie._id} {...qualitie} />
           ))}
         </td>
         <td>{profession.name}</td>
         <td>{completedMeetings}</td>
         <td>{rate}/5</td>
+        <td>
+          <BookMark _id={_id} status={bookmark} onToggleMark={onToggleMark} />
+        </td>
         <td>
           <button type="button" className="btn btn-danger" onClick={() => onDelete(_id)}>
             delete
