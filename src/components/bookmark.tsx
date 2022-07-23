@@ -1,14 +1,12 @@
-import React from "react";
-
 type BookMarkProps = {
   _id: string;
   status: boolean;
   onToggleMark: (userId: string) => void;
 };
 
-const BookMark: React.FC<BookMarkProps> = ({ _id, status, onToggleMark }) => {
+function BookMark({ _id, status, onToggleMark }: BookMarkProps) {
   return (
-    <button onClick={() => onToggleMark(_id)}>
+    <button type="button" onClick={() => onToggleMark(_id)}>
       {status ? (
         <svg
           role="button"
@@ -36,6 +34,6 @@ const BookMark: React.FC<BookMarkProps> = ({ _id, status, onToggleMark }) => {
       )}
     </button>
   );
-};
+}
 
 export default BookMark;

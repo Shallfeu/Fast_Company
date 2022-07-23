@@ -1,8 +1,8 @@
 import React from "react";
-import User from "./User";
 import { StateData } from "../App";
 import Pagination from "./Pagination";
 import { paginate } from "../utils/paginate";
+import User from "./User";
 
 export type UsersProps = {
   users: StateData[];
@@ -10,7 +10,7 @@ export type UsersProps = {
   onToggleMark: (userId: string) => void;
 };
 
-const Users: React.FC<UsersProps> = ({ users, onDelete, onToggleMark }) => {
+function Users({ users, onDelete, onToggleMark }: UsersProps) {
   const count = users.length;
   const pageSize = 4;
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -56,6 +56,6 @@ const Users: React.FC<UsersProps> = ({ users, onDelete, onToggleMark }) => {
       />
     </>
   );
-};
+}
 
 export default Users;

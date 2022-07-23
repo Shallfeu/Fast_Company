@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Users from "./components/Users";
 import SearchStatus from "./components/SearchStatus";
 import api from "./api";
+import Users from "./components/Users";
 
 export type StateData = {
   _id: string;
@@ -17,11 +17,7 @@ function App() {
   const [users, setUsers] = useState<StateData[]>(api.users.fetchAll());
 
   const handleDelete = (userId: string) => {
-    setUsers(
-      users.filter((user) => {
-        return user?._id !== userId;
-      })
-    );
+    setUsers(users.filter((user) => user?._id !== userId));
   };
 
   const handleToggleMark = (userId: string) => {

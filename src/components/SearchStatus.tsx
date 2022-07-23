@@ -4,7 +4,7 @@ type SearchStatusProps = {
   length: number;
 };
 
-const SearchStatus: React.FC<SearchStatusProps> = ({ length }) => {
+function SearchStatus({ length }: SearchStatusProps) {
   const renderPhrase = (number: number) => {
     const lastOne = Number(number.toString().slice(-1));
     if (number > 4 && number < 15) {
@@ -16,13 +16,13 @@ const SearchStatus: React.FC<SearchStatusProps> = ({ length }) => {
   };
   return (
     <h2>
-      <span className={"badge " + (length > 0 ? "bg-primary" : "bg-danger")}>
+      <span className={`badge ${length > 0 ? "bg-primary" : "bg-danger"}`}>
         {length > 0
-          ? `${length + " " + renderPhrase(length)}   с тобой сегодня`
+          ? `${`${length} ${renderPhrase(length)}`}   с тобой сегодня`
           : "Никто с тобой не тусанет"}
       </span>
     </h2>
   );
-};
+}
 
 export default SearchStatus;

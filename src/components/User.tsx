@@ -9,7 +9,7 @@ export type UserProps = {
   onToggleMark: (userId: string) => void;
 };
 
-const User: React.FC<UserProps> = ({ user, onDelete, onToggleMark }) => {
+function User({ user, onDelete, onToggleMark }: UserProps) {
   const {
     _id,
     name,
@@ -20,36 +20,37 @@ const User: React.FC<UserProps> = ({ user, onDelete, onToggleMark }) => {
     bookmark,
   } = user;
   return (
-    <>
-      <tr>
-        <td>{name}</td>
-        <td>
-          {qualities.map((quality: any) => (
-            <Quality key={quality._id} {...quality} />
-          ))}
-        </td>
-        <td>{profession.name}</td>
-        <td>{completedMeetings}</td>
-        <td>{rate}/5</td>
-        <td>
-          <BookMark
-            _id={_id}
-            status={bookmark}
-            onToggleMark={() => onToggleMark(_id)}
-          />
-        </td>
-        <td>
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={() => onDelete(_id)}
-          >
-            delete
-          </button>
-        </td>
-      </tr>
-    </>
+    <tr>
+      <td>{name}</td>
+      <td>
+        {qualities.map((quality: any) => (
+          <Quality key={quality._id} {...quality} />
+        ))}
+      </td>
+      <td>{profession.name}</td>
+      <td>{completedMeetings}</td>
+      <td>
+        {rate}
+        /5
+      </td>
+      <td>
+        <BookMark
+          _id={_id}
+          status={bookmark}
+          onToggleMark={() => onToggleMark(_id)}
+        />
+      </td>
+      <td>
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={() => onDelete(_id)}
+        >
+          delete
+        </button>
+      </td>
+    </tr>
   );
-};
+}
 
 export default User;
