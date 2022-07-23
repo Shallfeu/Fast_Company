@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import Users from './components/users';
-import SearchStatus from './components/search-status';
-import api from './api';
+import React, { useState } from "react";
+import Users from "./components/Users";
+import SearchStatus from "./components/SearchStatus";
+import api from "./api";
 
 export type StateData = {
   _id: string;
@@ -20,24 +20,29 @@ function App() {
     setUsers(
       users.filter((user) => {
         return user?._id !== userId;
-      }),
+      })
     );
   };
 
   const handleToggleMark = (userId: string) => {
-    const newUsers = users.map((user) => {
-      if (user._id === userId) {
-        user.bookmark = !user.bookmark;
-      }
-      return user;
-    });
-    setUsers(newUsers);
+    setUsers(
+      users.map((user) => {
+        if (user._id === userId) {
+          user.bookmark = !user.bookmark;
+        }
+        return user;
+      })
+    );
   };
 
   return (
     <>
       <SearchStatus length={users.length} />
-      <Users users={users} onDelete={handleDelete} onToggleMark={handleToggleMark} />
+      <Users
+        users={users}
+        onDelete={handleDelete}
+        onToggleMark={handleToggleMark}
+      />
     </>
   );
 }

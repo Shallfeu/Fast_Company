@@ -1,6 +1,8 @@
-import React from 'react';
-import User from './user';
-import { StateData } from '../App';
+import React from "react";
+import User from "./User";
+import { StateData } from "../App";
+import Pagination from "./Pagination";
+import { paginate } from "../utils/paginate";
 
 export type UsersProps = {
   users: StateData[];
@@ -9,9 +11,19 @@ export type UsersProps = {
 };
 
 const Users: React.FC<UsersProps> = ({ users, onDelete, onToggleMark }) => {
+  const count = users.length;
+  const pageSize = 4;
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const handlePageChange = (pageIndex: number) => {
+    setCurrentPage(pageIndex);
+  };
+
+  const userCrop = paginate(users, currentPage, pageSize);
+
   return (
     <>
-      {users.length !== 0 && (
+      {count !== 0 && (
         <table className="table">
           <thead>
             <tr>
@@ -25,12 +37,23 @@ const Users: React.FC<UsersProps> = ({ users, onDelete, onToggleMark }) => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <User key={user._id} onDelete={onDelete} onToggleMark={onToggleMark} user={user} />
+            {userCrop.map((user) => (
+              <User
+                key={user._id}
+                onDelete={onDelete}
+                onToggleMark={onToggleMark}
+                user={user}
+              />
             ))}
           </tbody>
         </table>
       )}
+      <Pagination
+        itemsCount={count}
+        pageSize={pageSize}
+        onPageChange={handlePageChange}
+        currentPage={currentPage}
+      />
     </>
   );
 };
