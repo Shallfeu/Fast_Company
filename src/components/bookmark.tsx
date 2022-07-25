@@ -3,7 +3,6 @@ type BookMarkProps = {
   status: boolean;
   onToggleMark: (userId: string) => void;
 };
-
 function BookMark({ _id, status, onToggleMark }: BookMarkProps) {
   return (
     <button type="button" onClick={() => onToggleMark(_id)}>
@@ -35,5 +34,4 @@ function BookMark({ _id, status, onToggleMark }: BookMarkProps) {
     </button>
   );
 }
-
 export default BookMark;
