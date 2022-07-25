@@ -39,13 +39,19 @@
     ],
     "react/jsx-uses-react": ["off"],
     "react/react-in-jsx-scope": ["off"],
-    "react/jsx-props-no-spreading": ["warn"],
+    "react/jsx-props-no-spreading": ["off"],
     "no-shadow": "off",
     "no-param-reassign": ["error", { "props": false }],
-    "no-underscore-dangle": 1,
+    "no-underscore-dangle": "off",
     "import/prefer-default-export": "off",
     "@typescript-eslint/naming-convention": "off",
-    "jsx-a11y/control-has-associated-label": "warn",
-    "import/no-cycle": "warn"
+    "jsx-a11y/control-has-associated-label": "off",
+    "import/no-cycle": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   }
 }
