@@ -13,7 +13,7 @@ export type StateData = {
   bookmark: boolean;
 };
 
-function App() {
+const App = () => {
   const [users, setUsers] = useState<StateData[]>(api.users.fetchAll());
 
   const handleDelete = (userId: string) => {
@@ -41,6 +41,6 @@ function App() {
       />
     </>
   );
-}
+};
 
 export default App;

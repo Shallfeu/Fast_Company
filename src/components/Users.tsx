@@ -3,6 +3,8 @@ import { StateData } from "../App";
 import Pagination from "./Pagination";
 import { paginate } from "../utils/paginate";
 import User from "./User";
+import FilterList from "./FilterLIst";
+import api from "../api";
 
 export type UsersProps = {
   users: StateData[];
@@ -10,20 +12,35 @@ export type UsersProps = {
   onToggleMark: (userId: string) => void;
 };
 
-function Users({ users, onDelete, onToggleMark }: UsersProps) {
-  const count = users.length;
+const Users: React.FC<UsersProps> = ({ users, onDelete, onToggleMark }) => {
   const pageSize = 4;
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [professions, setProfFilter] = React.useState<{}>();
+
+  React.useEffect(() => {
+    api.professions.fetchAll().then((data: any[]) => setProfFilter(data));
+  }, []);
 
   const handlePageChange = (pageIndex: number) => {
     setCurrentPage(pageIndex);
   };
 
-  const userCrop = paginate(users, currentPage, pageSize);
+  const handleFilterSelect = (filterId: string) => {
+    console.log(filterId);
+  };
+
+  const usersCrop = paginate(users, currentPage, pageSize);
+
+  if (usersCrop.length === 0 && users.length > 0) {
+    setCurrentPage(currentPage - 1);
+  }
 
   return (
     <>
-      {count !== 0 && (
+      {professions && (
+        <FilterList items={professions} onSelect={handleFilterSelect} />
+      )}
+      {users.length > 0 && (
         <table className="table">
           <thead>
             <tr>
@@ -37,7 +54,7 @@ function Users({ users, onDelete, onToggleMark }: UsersProps) {
             </tr>
           </thead>
           <tbody>
-            {userCrop.map((user) => (
+            {usersCrop.map((user) => (
               <User
                 key={user._id}
                 onDelete={onDelete}
@@ -49,13 +66,13 @@ function Users({ users, onDelete, onToggleMark }: UsersProps) {
         </table>
       )}
       <Pagination
-        itemsCount={count}
+        itemsCount={users.length}
         pageSize={pageSize}
         onPageChange={handlePageChange}
         currentPage={currentPage}
       />
     </>
   );
-}
+};
 
 export default Users;

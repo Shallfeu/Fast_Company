@@ -8,12 +8,12 @@ type PaginationProps = {
   currentPage: number;
 };
 
-function Pagination({
+const Pagination: React.FC<PaginationProps> = ({
   itemsCount,
   pageSize,
   onPageChange,
   currentPage,
-}: PaginationProps) {
+}) => {
   const pageCount = Math.ceil(itemsCount / pageSize);
   if (pageCount === 1) return null;
   const pages = lodash.range(1, pageCount + 1);
@@ -23,7 +23,7 @@ function Pagination({
       <ul className="pagination">
         {pages.map((page) => (
           <li
-            className={`page-item ${currentPage === page ? "active" : ""}`}
+            className={`page-item ${page === currentPage ? " active" : ""}`}
             key={`page_${page}`}
           >
             <button
@@ -38,6 +38,6 @@ function Pagination({
       </ul>
     </nav>
   );
-}
+};
 
 export default Pagination;

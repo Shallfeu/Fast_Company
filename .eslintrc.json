@@ -46,12 +46,23 @@
     "import/prefer-default-export": "off",
     "@typescript-eslint/naming-convention": "off",
     "jsx-a11y/control-has-associated-label": "off",
+    "react/function-component-definition": [
+      1,
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
     "import/no-cycle": "off",
     "prettier/prettier": [
       "error",
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "react/require-default-props": "off",
+    "import/no-named-as-default": 0
   }
 }

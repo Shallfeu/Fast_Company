@@ -1,9 +1,11 @@
+import React from "react";
+
 type BookMarkProps = {
   _id: string;
   status: boolean;
   onToggleMark: (userId: string) => void;
 };
-function BookMark({ _id, status, onToggleMark }: BookMarkProps) {
+const BookMark: React.FC<BookMarkProps> = ({ _id, status, onToggleMark }) => {
   return (
     <button type="button" onClick={() => onToggleMark(_id)}>
       {status ? (
@@ -33,5 +35,5 @@ function BookMark({ _id, status, onToggleMark }: BookMarkProps) {
       )}
     </button>
   );
-}
+};
 export default BookMark;

@@ -9,7 +9,7 @@ export type UserProps = {
   onToggleMark: (userId: string) => void;
 };
 
-function User({ user, onDelete, onToggleMark }: UserProps) {
+const User: React.FC<UserProps> = ({ user, onDelete, onToggleMark }) => {
   const {
     _id,
     name,
@@ -51,6 +51,6 @@ function User({ user, onDelete, onToggleMark }: UserProps) {
       </td>
     </tr>
   );
-}
+};
 
 export default User;
