@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import SearchStatus from "./components/SearchStatus";
 import api from "./api";
 import Users from "./components/Users";
 
@@ -14,7 +13,11 @@ export type StateData = {
 };
 
 const App = () => {
-  const [users, setUsers] = useState<StateData[]>(api.users.fetchAll());
+  const [users, setUsers] = useState<StateData[]>([]);
+
+  React.useEffect(() => {
+    api.users.fetchAll().then((data: any[]) => setUsers(data));
+  }, []);
 
   const handleDelete = (userId: string) => {
     setUsers(users.filter((user) => user?._id !== userId));
@@ -32,14 +35,11 @@ const App = () => {
   };
 
   return (
-    <>
-      <SearchStatus length={users.length} />
-      <Users
-        users={users}
-        onDelete={handleDelete}
-        onToggleMark={handleToggleMark}
-      />
-    </>
+    <Users
+      users={users}
+      onDelete={handleDelete}
+      onToggleMark={handleToggleMark}
+    />
   );
 };
 
