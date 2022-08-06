@@ -63,6 +63,7 @@
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
     "react/require-default-props": "off",
-    "import/no-named-as-default": 0
+    "import/no-named-as-default": 0,
+    "react/no-unstable-nested-components": ["off", { "allowAsProps": false }]
   }
 }

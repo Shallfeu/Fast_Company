@@ -1,6 +1,6 @@
 import React from "react";
 
-type QualityData = {
+export type QualityData = {
   _id: string;
   name: string;
   color: string;
