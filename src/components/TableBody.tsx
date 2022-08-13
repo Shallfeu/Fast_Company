@@ -3,13 +3,14 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 
 import { StateData } from "./layouts/Users";
+import { ColumnProp } from "./Table";
 
 type TableBodyProps = {
   data: StateData[];
   columns: any;
 };
 
-const renderContent = (item: StateData, column: any) => {
+const renderContent = (item: StateData, column: ColumnProp) => {
   if (column.component) {
     if (typeof column.component === "function") {
       return column.component(item);
@@ -29,7 +30,7 @@ const TableBody: React.FC<TableBodyProps> = ({ data, columns }) => {
     <tbody>
       {data.map((item) => (
         <tr key={item._id}>
-          {Object.keys(columns).map((column: any) => (
+          {Object.keys(columns).map((column: string) => (
             <td key={column}>{renderContent(item, columns[column])}</td>
           ))}
         </tr>

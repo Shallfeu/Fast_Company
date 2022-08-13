@@ -23,6 +23,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
   const columns = {
     name: { path: "name", name: "Имя" },
     qualities: {
+      path: "qualities",
       name: "Качества",
       component: (user: StateData) => (
         <QualitiesList qualities={user.qualities} />

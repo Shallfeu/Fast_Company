@@ -10,9 +10,13 @@ import { paginate } from "../../utils/paginate";
 import api from "../../api";
 import UsersTable from "../UsersTable";
 
-export type selectedProfProps = {
+export type ProfProps = {
   _id?: string;
   name?: string;
+};
+
+export type ProfObjectProps = {
+  key: ProfProps;
 };
 
 export type StateData = {
@@ -30,9 +34,12 @@ interface Props {}
 const Users: React.FC<Props> = () => {
   const pageSize = 4;
   const [currentPage, setCurrentPage] = useState(1);
-  const [professions, setProfessions] = useState<selectedProfProps[]>();
-  const [selectedProf, setSelectedProf] =
-    React.useState<selectedProfProps | null>(null);
+  const [professions, setProfessions] = useState<
+    ProfProps[] | ProfObjectProps
+  >();
+  const [selectedProf, setSelectedProf] = React.useState<ProfProps | null>(
+    null
+  );
   const [sortBy, setSortBy] = useState<{
     path: string;
     order: "asc" | "desc";
@@ -48,11 +55,11 @@ const Users: React.FC<Props> = () => {
     setLoading(true);
     api.users
       .fetchAll()
-      .then((data: any[]) => setUsers(data))
+      .then((data: StateData[]) => setUsers(data))
       .then(() =>
         api.professions
           .fetchAll()
-          .then((data: any[]) => setProfessions(data))
+          .then((data: ProfProps[] | ProfObjectProps) => setProfessions(data))
           .finally(() => setLoading(false))
       );
   }, []);
@@ -82,7 +89,7 @@ const Users: React.FC<Props> = () => {
     setCurrentPage(pageIndex);
   };
 
-  const handleFilterSelect = (item: selectedProfProps) => {
+  const handleFilterSelect = (item: ProfProps) => {
     setSelectedProf(item);
     setCurrentPage(currentPage - 1);
   };

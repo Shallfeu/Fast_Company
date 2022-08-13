@@ -8,7 +8,7 @@ type QualitiesListProps = {
 const QualitiesList: React.FC<QualitiesListProps> = ({ qualities }) => {
   return (
     <>
-      {qualities.map((quality: any) => (
+      {qualities.map((quality: QualityData) => (
         <Quality key={quality._id} {...quality} />
       ))}
     </>
