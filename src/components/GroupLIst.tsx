@@ -1,10 +1,10 @@
 import { isArray } from "lodash";
 import React from "react";
-import { selectedProfProps } from "./Users";
+import { selectedProfProps } from "./layouts/Users";
 
 type GroupLIstProps = {
   items: {} | [];
-  selectedItem: selectedProfProps | undefined;
+  selectedItem: selectedProfProps | null;
   valueProperty?: string;
   contentProperty?: string;
   onSelect: (item: selectedProfProps) => void;

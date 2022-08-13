@@ -1,6 +1,6 @@
 import React from "react";
 
-import { StateData } from "./Users";
+import { StateData } from "./layouts/Users";
 import BookMark from "./BookMark";
 import QualitiesList from "./QualitiesList";
 import Table from "./Table";

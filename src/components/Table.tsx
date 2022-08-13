@@ -1,5 +1,5 @@
 import React from "react";
-import { StateData } from "./Users";
+import { StateData } from "./layouts/Users";
 
 import TableBody from "./TableBody";
 import TableHeader from "./TableHeader";
@@ -9,7 +9,7 @@ export type TableProps = {
   selectedSort: { path: string; order: "asc" | "desc" };
   columns: any;
   onSort: (item: { path: string; order: "asc" | "desc" }) => void;
-  children?: any;
+  children?: JSX.Element;
 };
 
 const Table: React.FC<TableProps> = ({
@@ -28,7 +28,7 @@ const Table: React.FC<TableProps> = ({
             columns={columns}
             onSort={onSort}
           />
-          <TableBody data={data} columns={columns} />;
+          <TableBody data={data} columns={columns} />
         </>
       )}
     </table>

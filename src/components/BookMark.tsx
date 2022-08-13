@@ -5,6 +5,7 @@ type BookMarkProps = {
   status: boolean;
   onToggleMark: (userId: string) => void;
 };
+
 const BookMark: React.FC<BookMarkProps> = ({ _id, status, onToggleMark }) => {
   return (
     <button type="button" onClick={() => onToggleMark(_id)}>

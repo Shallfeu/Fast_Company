@@ -1,7 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import _ from "lodash";
 
-import { StateData } from "./Users";
+import { StateData } from "./layouts/Users";
 
 type TableBodyProps = {
   data: StateData[];
@@ -15,7 +16,12 @@ const renderContent = (item: StateData, column: any) => {
     }
     return column.component;
   }
-  return _.get(item, column.path);
+
+  return column.path === "name" ? (
+    <Link to={`/users/${item._id}`}>{item.name}</Link>
+  ) : (
+    _.get(item, column.path)
+  );
 };
 
 const TableBody: React.FC<TableBodyProps> = ({ data, columns }) => {
