@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 
 import Pagination from "../Pagination";
@@ -33,13 +32,21 @@ interface Props {}
 
 const Users: React.FC<Props> = () => {
   const pageSize = 4;
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const [searchString, setSearchString] = useState<string>("");
+
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const [professions, setProfessions] = useState<
     ProfProps[] | ProfObjectProps
   >();
+
   const [selectedProf, setSelectedProf] = React.useState<ProfProps | null>(
     null
   );
+
   const [sortBy, setSortBy] = useState<{
     path: string;
     order: "asc" | "desc";
@@ -49,6 +56,7 @@ const Users: React.FC<Props> = () => {
   });
 
   const [users, setUsers] = React.useState<StateData[]>([]);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -85,11 +93,22 @@ const Users: React.FC<Props> = () => {
     );
   };
 
+  const handleSearch = () => {
+    setSelectedProf(null);
+    if (searchRef?.current) {
+      setSearchString(searchRef.current.value);
+    }
+  };
+
   const handlePageChange = (pageIndex: number) => {
     setCurrentPage(pageIndex);
   };
 
   const handleFilterSelect = (item: ProfProps) => {
+    if (searchRef?.current) {
+      searchRef.current.value = "";
+    }
+    setSearchString("");
     setSelectedProf(item);
     setCurrentPage(currentPage - 1);
   };
@@ -99,7 +118,9 @@ const Users: React.FC<Props> = () => {
 
   const filteredUsers = selectedProf
     ? users.filter((user) => user.profession.name === selectedProf.name)
-    : users;
+    : users.filter((user) =>
+        user.name.toLowerCase().includes(searchString.toLowerCase())
+      );
 
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], sortBy.order);
 
@@ -130,7 +151,12 @@ const Users: React.FC<Props> = () => {
 
       <div className="d-flex flex-column">
         {users.length > 0 && <SearchStatus length={usersCrop.length} />}
-
+        <input
+          type="text"
+          placeholder="Search..."
+          onChange={handleSearch}
+          ref={searchRef}
+        />
         {users.length > 0 && (
           <UsersTable
             users={usersCrop}
@@ -140,7 +166,6 @@ const Users: React.FC<Props> = () => {
             onSort={handleSort}
           />
         )}
-
         <div className="d-flex justify-content-center">
           <Pagination
             itemsCount={filteredUsers.length}

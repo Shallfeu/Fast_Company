@@ -41,6 +41,7 @@
     "react/react-in-jsx-scope": ["off"],
     "react/jsx-props-no-spreading": ["off"],
     "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["off"],
     "no-param-reassign": ["error", { "props": false }],
     "no-underscore-dangle": "off",
     "import/prefer-default-export": "off",
@@ -64,6 +65,14 @@
     "@typescript-eslint/no-unused-vars": ["error"],
     "react/require-default-props": "off",
     "import/no-named-as-default": 0,
-    "react/no-unstable-nested-components": ["off", { "allowAsProps": false }]
+    "react/no-unstable-nested-components": ["off", { "allowAsProps": false }],
+    "consistent-return": ["off"],
+    "react/self-closing-comp": [
+      "error",
+      {
+        "component": false,
+        "html": false
+      }
+    ]
   }
 }
