@@ -1,9 +1,9 @@
 import React from "react";
 
-import { StateData } from "./layouts/Users";
-import BookMark from "./BookMark";
-import QualitiesList from "./QualitiesList";
-import Table from "./Table";
+import { StateData } from "../page/usersListPage/UsersListPage";
+import BookMark from "../common/BookMark";
+import Qualities from "./qualities";
+import Table from "../common/table";
 
 export type UsersTableProps = {
   users: StateData[];
@@ -25,9 +25,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
     qualities: {
       path: "qualities",
       name: "Качества",
-      component: (user: StateData) => (
-        <QualitiesList qualities={user.qualities} />
-      ),
+      component: (user: StateData) => <Qualities qualities={user.qualities} />,
     },
     profession: { path: "profession.name", name: "Профессия" },
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },

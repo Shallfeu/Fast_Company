@@ -1,6 +1,6 @@
 import { isArray } from "lodash";
 import React from "react";
-import { ProfObjectProps, ProfProps } from "./layouts/Users";
+import { ProfObjectProps, ProfProps } from "../page/usersListPage";
 
 type GroupListProps = {
   items: ProfObjectProps | ProfProps[];

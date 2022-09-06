@@ -5,7 +5,7 @@ type TextFieldProps = {
   label: string;
   name: string;
   value: string;
-  error: string | undefined;
+  error: string | null;
   onChange: (e: any) => void;
 };
 
@@ -17,6 +17,10 @@ const TextField: React.FC<TextFieldProps> = ({
   error,
   onChange,
 }) => {
+  const handleChange = ({ target }: any) => {
+    onChange({ name: target.name, value: target.value });
+  };
+
   const [showPassword, setShowPassword] = useState(false);
 
   const getInputClasses = () => `form-control ${error ? "is-invalid" : ""}`;
@@ -35,10 +39,10 @@ const TextField: React.FC<TextFieldProps> = ({
       <div className="input-group has-validation">
         <input
           className={getInputClasses()}
-          type={showPassword ? "text" : "password"}
+          type={type === "text" ? "text" : showPassword ? "text" : "password"}
           name={name}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
         />
         {type === "password" && (
           <button

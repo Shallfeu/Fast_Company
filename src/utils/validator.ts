@@ -10,7 +10,15 @@ export function validator(data: {}, config: {}) {
 
     switch (validateMethod) {
       case "isRequired":
-        validateStatus = data.trim() === "";
+        if (Array.isArray(data)) {
+          validateStatus = data.length === 0;
+        }
+        if (typeof data === "string") {
+          validateStatus = data?.trim() === "";
+        }
+        if (typeof data === "boolean") {
+          validateStatus = !data;
+        }
         break;
 
       case "isEmail": {
@@ -45,6 +53,7 @@ export function validator(data: {}, config: {}) {
   }
 
   Object.keys(data).forEach((fieldName) => {
+    if (!(config as any)[fieldName]) return;
     Object.keys((config as any)[fieldName]).forEach((validateMethod) => {
       const error = validate(
         validateMethod,
@@ -59,3 +68,59 @@ export function validator(data: {}, config: {}) {
 
   return errors;
 }
+
+// const validatorConfig = {
+//   email: {
+//     isRequired: {
+//       message: "Электронная почта почта обязательна для заполнения",
+//     },
+
+//     isEmail: {
+//       message: "Email введен некорректно",
+//     },
+//   },
+
+//   password: {
+//     isRequired: {
+//       message: "Пароль обязателен для заполнения",
+//     },
+
+//     isCapitalSymbol: {
+//       message: "Пароль должен содержать хотя бы одну заглавную букву",
+//     },
+
+//     isContainDigit: {
+//       message: "Пароль должен содержать хотя бы одну цифру",
+//     },
+
+//     min: {
+//       message: "Пароль должен содержать хотя бы 8 симолов",
+//       value: 8,
+//     },
+//   },
+
+//   profession: {
+//     isRequired: {
+//       message: "Профессия обязательно должна быть выбрана",
+//     },
+//   },
+
+//   sex: {
+//     isRequired: {
+//       message: "Пол обязательно должен быть выбран",
+//     },
+//   },
+
+//   quality: {
+//     isRequired: {
+//       message: "Хотя бы одно качество должно быть выбрано",
+//     },
+//   },
+
+//   licence: {
+//     isRequired: {
+//       message:
+//         "Вы не сможете продолжить, если не подтвердите лицензионное соглашение",
+//     },
+//   },
+// };

@@ -1,41 +1,30 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import _ from "lodash";
 
-import Pagination from "../Pagination";
-import GroupList from "../GroupLIst";
-import SearchStatus from "../SearchStatus";
-
-import { paginate } from "../../utils/paginate";
-import api from "../../api";
-import UsersTable from "../UsersTable";
-
-export type ProfProps = {
-  _id?: string;
-  name?: string;
-};
-
-export type ProfObjectProps = {
-  key: ProfProps;
-};
+import Pagination from "../../common/Pagination";
+import api from "../../../api";
+import { paginate } from "../../../utils/paginate";
+import GroupList from "../../common/GroupLIst";
+import SearchStatus from "../../ui/SearchStatus";
+import UsersTable from "../../ui/UsersTable";
+import { ProfObjectProps, ProfProps } from ".";
 
 export type StateData = {
   _id: string;
+  email: string;
   name: string;
   qualities: { _id: string; name: string; color: string }[];
   profession: { _id: string; name: string };
   completedMeetings: number;
   rate: number;
   bookmark: boolean;
+  sex: string;
 };
 
-interface Props {}
-
-const Users: React.FC<Props> = () => {
+const UsersListPage: React.FC = () => {
   const pageSize = 4;
 
-  const [searchString, setSearchString] = useState<string>("");
-
-  const searchRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -93,11 +82,9 @@ const Users: React.FC<Props> = () => {
     );
   };
 
-  const handleSearch = () => {
+  const handleSearch = ({ target }: any) => {
     setSelectedProf(null);
-    if (searchRef?.current) {
-      setSearchString(searchRef.current.value);
-    }
+    setSearchQuery(target.value);
   };
 
   const handlePageChange = (pageIndex: number) => {
@@ -105,10 +92,7 @@ const Users: React.FC<Props> = () => {
   };
 
   const handleFilterSelect = (item: ProfProps) => {
-    if (searchRef?.current) {
-      searchRef.current.value = "";
-    }
-    setSearchString("");
+    setSearchQuery("");
     setSelectedProf(item);
     setCurrentPage(currentPage - 1);
   };
@@ -118,9 +102,11 @@ const Users: React.FC<Props> = () => {
 
   const filteredUsers = selectedProf
     ? users.filter((user) => user.profession.name === selectedProf.name)
-    : users.filter((user) =>
-        user.name.toLowerCase().includes(searchString.toLowerCase())
-      );
+    : searchQuery
+    ? users.filter((user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : users;
 
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], sortBy.order);
 
@@ -153,9 +139,10 @@ const Users: React.FC<Props> = () => {
         {users.length > 0 && <SearchStatus length={usersCrop.length} />}
         <input
           type="text"
+          name="searchQuery"
           placeholder="Search..."
           onChange={handleSearch}
-          ref={searchRef}
+          value={searchQuery}
         />
         {users.length > 0 && (
           <UsersTable
@@ -179,4 +166,4 @@ const Users: React.FC<Props> = () => {
   );
 };
 
-export default Users;
+export default UsersListPage;

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 
-import { StateData } from "./layouts/Users";
+import { StateData } from "../../page/usersListPage/UsersListPage";
 import { ColumnProp } from "./Table";
 
 type TableBodyProps = {

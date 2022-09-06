@@ -1,6 +1,5 @@
 import React from "react";
-import { StateData } from "./layouts/Users";
-
+import { StateData } from "../../page/usersListPage/UsersListPage";
 import TableBody from "./TableBody";
 import TableHeader from "./TableHeader";
 
