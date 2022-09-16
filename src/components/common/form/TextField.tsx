@@ -35,7 +35,7 @@ const TextField: React.FC<TextFieldProps> = ({
 
   return (
     <div className="mb-4">
-      <label htmlFor="email">{label}</label>
+      <label htmlFor={label}>{label}</label>
       <div className="input-group has-validation">
         <input
           className={getInputClasses()}

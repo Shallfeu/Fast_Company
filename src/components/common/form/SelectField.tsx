@@ -42,7 +42,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         value={value}
         onChange={handleChange}
       >
-        <option value="" disabled>
+        <option disabled value="">
           {defaultOption}
         </option>
 

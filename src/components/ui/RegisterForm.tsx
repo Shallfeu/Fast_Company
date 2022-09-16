@@ -103,34 +103,34 @@ const RegisterForm: React.FC = () => {
     });
   });
 
-  const getProfessionById = (id: string) => {
-    const prof: { label: string; value: string }[] = professions.filter(
-      (prof) => prof.value === id
-    );
-    return { _id: prof[0].value, name: prof[0].label };
-  };
+  // const getProfessionById = (id: string) => {
+  //   const prof: { label: string; value: string }[] = professions.filter(
+  //     (prof) => prof.value === id
+  //   );
+  //   return { _id: prof[0].value, name: prof[0].label };
+  // };
 
-  const getQualities = (elements: []) => {
-    const qualitiesArray: {
-      _id: string;
-      name: string;
-      color: string;
-    }[] = [];
+  // const getQualities = (elements: []) => {
+  //   const qualitiesArray: {
+  //     _id: string;
+  //     name: string;
+  //     color: string;
+  //   }[] = [];
 
-    elements.forEach((elem: { value: string; label: string }) => {
-      qualities.forEach((qual: QualitiesObj) => {
-        if (elem.value === qual.value) {
-          qualitiesArray.push({
-            _id: qual.value,
-            name: qual.label,
-            color: qual.color,
-          });
-        }
-      });
-    });
+  //   elements.forEach((elem: { value: string; label: string }) => {
+  //     qualities.forEach((qual: QualitiesObj) => {
+  //       if (elem.value === qual.value) {
+  //         qualitiesArray.push({
+  //           _id: qual.value,
+  //           name: qual.label,
+  //           color: qual.color,
+  //         });
+  //       }
+  //     });
+  //   });
 
-    return qualitiesArray;
-  };
+  //   return qualitiesArray;
+  // };
 
   const validate = () => {
     validateScheme
@@ -154,14 +154,14 @@ const RegisterForm: React.FC = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const isValid = validate();
-    if (!isValid) return;
-    const { profession, quality } = data;
+    if (!isValid) return null;
+    // const { profession, quality } = data;
 
-    console.log({
-      ...data,
-      profession: getProfessionById(profession),
-      quality: getQualities(quality),
-    });
+    // console.log({
+    //   ...data,
+    //   profession: getProfessionById(profession),
+    //   quality: getQualities(quality),
+    // });
   };
 
   return (

@@ -64,8 +64,8 @@ const LoginForm: React.FC = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const isValid = validate();
-    if (!isValid) return;
-    console.log(data);
+    if (!isValid) return null;
+    // console.log(data);
   };
 
   return (
