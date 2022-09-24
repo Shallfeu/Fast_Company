@@ -4,6 +4,7 @@ import { StateData } from "../page/usersListPage/UsersListPage";
 import BookMark from "../common/BookMark";
 import Qualities from "./qualities";
 import Table from "../common/table";
+import Profession from "./Profession";
 
 export type UsersTableProps = {
   users: StateData[];
@@ -22,14 +23,23 @@ const UsersTable: React.FC<UsersTableProps> = ({
 }) => {
   const columns = {
     name: { path: "name", name: "Имя" },
+
     qualities: {
       path: "qualities",
       name: "Качества",
       component: (user: StateData) => <Qualities qualities={user.qualities} />,
     },
-    profession: { path: "profession.name", name: "Профессия" },
+
+    profession: {
+      path: "profession",
+      name: "Профессия",
+      component: (user: StateData) => <Profession id={user.profession} />,
+    },
+
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
+
     rate: { path: "rate", name: "Оценка" },
+
     bookmark: {
       path: "bookmark",
       name: "Избранное",
@@ -41,6 +51,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
         />
       ),
     },
+
     delete: {
       component: (user: StateData) => (
         <button

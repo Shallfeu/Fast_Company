@@ -17,7 +17,7 @@ const UserPage: React.FC<UserPageProps> = ({ id }) => {
 
   useEffect(() => {
     API.users.getById(id).then((data) => setUser(data));
-  }, [user, id]);
+  }, []);
 
   if (!user) {
     return <h1>Loading...</h1>;

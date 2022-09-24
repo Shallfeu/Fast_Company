@@ -2,19 +2,21 @@ import React, { useEffect, useState } from "react";
 import _ from "lodash";
 
 import Pagination from "../../common/Pagination";
-import api from "../../../api";
 import { paginate } from "../../../utils/paginate";
 import GroupList from "../../common/GroupLIst";
 import SearchStatus from "../../ui/SearchStatus";
 import UsersTable from "../../ui/UsersTable";
-import { ProfObjectProps, ProfProps } from ".";
+import { ProfProps } from ".";
+
+import { useUsers } from "../../../hooks/useUsers";
+import { useProfession } from "../../../hooks/useProfession";
 
 export type StateData = {
   _id: string;
   email: string;
   name: string;
-  qualities: { _id: string; name: string; color: string }[];
-  profession: { _id: string; name: string };
+  qualities: string[];
+  profession: string;
   completedMeetings: number;
   rate: number;
   bookmark: boolean;
@@ -28,10 +30,6 @@ const UsersListPage: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const [professions, setProfessions] = useState<
-    ProfProps[] | ProfObjectProps
-  >();
-
   const [selectedProf, setSelectedProf] = React.useState<ProfProps | null>(
     null
   );
@@ -44,42 +42,28 @@ const UsersListPage: React.FC = () => {
     order: "asc",
   });
 
-  const [users, setUsers] = React.useState<StateData[]>([]);
+  const { users } = useUsers();
 
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    api.users
-      .fetchAll()
-      .then((data: StateData[]) => setUsers(data))
-      .then(() =>
-        api.professions
-          .fetchAll()
-          .then((data: ProfProps[] | ProfObjectProps) => setProfessions(data))
-          .finally(() => setLoading(false))
-      );
-  }, []);
+  const { professions } = useProfession();
 
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedProf]);
 
-  if (loading) return <h1>Loading...</h1>;
-
   const handleDelete = (userId: string) => {
-    setUsers(users.filter((user) => user?._id !== userId));
+    // setUsers(users.filter((user) => user?._id !== userId));
+    console.log(userId);
   };
 
   const handleToggleMark = (userId: string) => {
-    setUsers(
-      users.map((user) => {
-        if (user._id === userId) {
-          user.bookmark = !user.bookmark;
-        }
-        return user;
-      })
-    );
+    const newArray = users.map((user) => {
+      if (user._id === userId) {
+        user.bookmark = !user.bookmark;
+      }
+      return user;
+    });
+    // setUsers(newArray);
+    console.log(newArray);
   };
 
   const handleSearch = ({ target }: any) => {
@@ -101,7 +85,7 @@ const UsersListPage: React.FC = () => {
     setSortBy(item);
 
   const filteredUsers = selectedProf
-    ? users.filter((user) => user.profession.name === selectedProf.name)
+    ? users.filter((user) => user.profession === selectedProf._id)
     : searchQuery
     ? users.filter((user) =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -136,7 +120,7 @@ const UsersListPage: React.FC = () => {
       </div>
 
       <div className="d-flex flex-column">
-        {users.length > 0 && <SearchStatus length={usersCrop.length} />}
+        {users.length > 0 && <SearchStatus length={users.length} />}
         <input
           type="text"
           name="searchQuery"

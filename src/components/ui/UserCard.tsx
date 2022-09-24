@@ -34,9 +34,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
           />
           <div className="mt-3">
             <h4>{user.name}</h4>
-            <p className="text-secondary mb-1">
-              Профессия: {user.profession.name}
-            </p>
+            <p className="text-secondary mb-1">Профессия: {user.profession}</p>
             <p
               className={`text-${
                 user.sex === "male" ? "primary" : "danger"

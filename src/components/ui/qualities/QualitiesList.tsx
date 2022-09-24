@@ -1,15 +1,15 @@
 import React from "react";
-import Quality, { QualityData } from "./Quality";
+import Quality from "./Quality";
 
 type QualitiesListProps = {
-  qualities: QualityData[];
+  qualities: string[];
 };
 
 const QualitiesList: React.FC<QualitiesListProps> = ({ qualities }) => {
   return (
     <>
-      {qualities.map((quality: QualityData) => (
-        <Quality key={quality._id} {...quality} />
+      {qualities.map((quality: string) => (
+        <Quality key={quality} id={quality} />
       ))}
     </>
   );
