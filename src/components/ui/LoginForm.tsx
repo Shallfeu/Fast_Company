@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import * as yup from "yup";
+
+import { useAuth } from "../../hooks/useAuth";
 
 import CheckBoxField from "../common/form/CheckBoxField";
 import TextField from "../common/form/TextField";
@@ -11,6 +14,9 @@ type dataState = {
 };
 
 const LoginForm: React.FC = () => {
+  const history = useHistory();
+  const { signIn } = useAuth();
+
   const validateScheme = yup.object().shape({
     password: yup
       .string()
@@ -37,7 +43,7 @@ const LoginForm: React.FC = () => {
     stayOn: false,
   });
 
-  const [errors, setErrors] = useState<{
+  const [error, setError] = useState<{
     email?: string;
     password?: string;
   }>({});
@@ -45,12 +51,12 @@ const LoginForm: React.FC = () => {
   const validate = () => {
     validateScheme
       .validate(data)
-      .then(() => setErrors({}))
-      .catch((err) => setErrors({ [err.path]: err.message }));
-    return Object.keys(errors).length === 0;
+      .then(() => setError({}))
+      .catch((err) => setError({ [err.path]: err.message }));
+    return Object.keys(error).length === 0;
   };
 
-  const isValid = Object.keys(errors).length === 0;
+  const isValid = Object.keys(error).length === 0;
 
   useEffect(() => {
     validate();
@@ -61,11 +67,16 @@ const LoginForm: React.FC = () => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return null;
-    // console.log(data);
+    try {
+      await signIn(data);
+      history.push("/");
+    } catch (error: any) {
+      setError(error);
+    }
   };
 
   return (
@@ -75,7 +86,7 @@ const LoginForm: React.FC = () => {
         label="Электронная почта"
         name="email"
         value={data.email}
-        error={errors.email ? errors.email : null}
+        error={error.email ? error.email : null}
         onChange={handleChange}
       />
 
@@ -84,7 +95,7 @@ const LoginForm: React.FC = () => {
         label="Пароль"
         name="password"
         value={data.password}
-        error={errors.password ? errors.password : null}
+        error={error.password ? error.password : null}
         onChange={handleChange}
       />
 

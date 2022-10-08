@@ -95,6 +95,8 @@
         }
       }
     ],
-    "object-shorthand": "off"
+    "object-shorthand": "off",
+    "no-await-in-loop": "off",
+    "@typescript-eslint/no-throw-literal": "off"
   }
 }

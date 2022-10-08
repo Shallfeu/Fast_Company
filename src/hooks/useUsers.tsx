@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
 
 import userService from "../services/userService";
@@ -21,7 +27,7 @@ type Provider = {
   children?: JSX.Element | JSX.Element[];
 };
 
-const UserContext = React.createContext<IUserContext>({ users: [] });
+const UserContext = createContext<IUserContext>({ users: [] });
 
 export const useUsers = () => useContext(UserContext);
 

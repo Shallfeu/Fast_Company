@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import * as yup from "yup";
+import { useHistory } from "react-router-dom";
 
-import API from "../../api";
+import * as yup from "yup";
 
 import TextField from "../common/form/TextField";
 import SelectField from "../common/form/SelectField";
 import RadioField from "../common/form/RadioField";
 import MultiSelectField from "../common/form/MultiSelectField";
 import CheckBoxField from "../common/form/CheckBoxField";
+import { useQuality } from "../../hooks/useQuality";
+import { useProfession } from "../../hooks/useProfession";
+import { useAuth } from "../../hooks/useAuth";
 
 type dataState = {
   email: string;
@@ -25,6 +28,8 @@ type QualitiesObj = {
 };
 
 const RegisterForm: React.FC = () => {
+  const history = useHistory();
+
   const validateScheme = yup.object().shape({
     licence: yup
       .bool()
@@ -70,13 +75,24 @@ const RegisterForm: React.FC = () => {
     licence: false,
   });
 
-  const [qualities, setQualities] = useState<QualitiesObj[]>([]);
+  const { signUp } = useAuth();
 
-  const [professions, setProfessions] = useState<
-    { label: string; value: string }[]
-  >([]);
+  const { qualities } = useQuality();
 
-  const [errors, setErrors] = useState<{
+  const qualitiesList = qualities.map((quality) => ({
+    label: quality.name,
+    value: quality._id,
+    color: quality.color,
+  }));
+
+  const { professions } = useProfession();
+
+  const professionsList = professions.map((profession) => ({
+    label: profession.name,
+    value: profession._id,
+  }));
+
+  const [error, setError] = useState<{
     email?: string;
     password?: string;
     profession?: string;
@@ -85,62 +101,15 @@ const RegisterForm: React.FC = () => {
     licence?: string;
   }>({});
 
-  useEffect(() => {
-    API.professions.fetchAll().then((data) => {
-      const professionsList = Object.keys(data).map((professionName) => ({
-        label: data[professionName].name,
-        value: data[professionName]._id,
-      }));
-      setProfessions(professionsList);
-    });
-    API.qualities.fetchAll().then((data) => {
-      const qualitiesList = Object.keys(data).map((optionName) => ({
-        label: data[optionName].name,
-        value: data[optionName]._id,
-        color: data[optionName].color,
-      }));
-      setQualities(qualitiesList);
-    });
-  });
-
-  // const getProfessionById = (id: string) => {
-  //   const prof: { label: string; value: string }[] = professions.filter(
-  //     (prof) => prof.value === id
-  //   );
-  //   return { _id: prof[0].value, name: prof[0].label };
-  // };
-
-  // const getQualities = (elements: []) => {
-  //   const qualitiesArray: {
-  //     _id: string;
-  //     name: string;
-  //     color: string;
-  //   }[] = [];
-
-  //   elements.forEach((elem: { value: string; label: string }) => {
-  //     qualities.forEach((qual: QualitiesObj) => {
-  //       if (elem.value === qual.value) {
-  //         qualitiesArray.push({
-  //           _id: qual.value,
-  //           name: qual.label,
-  //           color: qual.color,
-  //         });
-  //       }
-  //     });
-  //   });
-
-  //   return qualitiesArray;
-  // };
-
   const validate = () => {
     validateScheme
       .validate(data)
-      .then(() => setErrors({}))
-      .catch((err) => setErrors({ [err.path]: err.message }));
-    return Object.keys(errors).length === 0;
+      .then(() => setError({}))
+      .catch((err) => setError({ [err.path]: err.message }));
+    return Object.keys(error).length === 0;
   };
 
-  const isValid = Object.keys(errors).length === 0;
+  const isValid = Object.keys(error).length === 0;
 
   useEffect(() => {
     validate();
@@ -151,17 +120,23 @@ const RegisterForm: React.FC = () => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return null;
-    // const { profession, quality } = data;
+    const { quality } = data;
 
-    // console.log({
-    //   ...data,
-    //   profession: getProfessionById(profession),
-    //   quality: getQualities(quality),
-    // });
+    const newData = {
+      ...data,
+      quality: quality.map((qu: QualitiesObj) => qu.value),
+    };
+
+    try {
+      await signUp(newData);
+      history.push("/");
+    } catch (error: any) {
+      setError(error);
+    }
   };
 
   return (
@@ -171,7 +146,7 @@ const RegisterForm: React.FC = () => {
         label="Электронная почта"
         name="email"
         value={data.email}
-        error={errors.email ? errors.email : null}
+        error={error.email ? error.email : null}
         onChange={handleChange}
       />
 
@@ -180,7 +155,7 @@ const RegisterForm: React.FC = () => {
         label="Пароль"
         name="password"
         value={data.password}
-        error={errors.password ? errors.password : null}
+        error={error.password ? error.password : null}
         onChange={handleChange}
       />
 
@@ -188,10 +163,10 @@ const RegisterForm: React.FC = () => {
         label="Выберите вашу профессию"
         name="profession"
         value={data.profession}
-        options={professions}
+        options={professionsList}
         onChange={handleChange}
         defaultOption="Choose..."
-        error={errors.profession ? errors.profession : null}
+        error={error.profession ? error.profession : null}
       />
 
       <RadioField
@@ -203,24 +178,24 @@ const RegisterForm: React.FC = () => {
         label="Выберите ваш пол"
         value={data.sex}
         name="sex"
-        error={errors.sex ? errors.sex : null}
+        error={error.sex ? error.sex : null}
         onChange={handleChange}
       />
 
       <MultiSelectField
         label="Выберите ваши качества"
         defaultValue={data.quality}
-        options={qualities}
+        options={qualitiesList}
         name="quality"
         onChange={handleChange}
-        error={errors.quality ? errors.quality : null}
+        error={error.quality ? error.quality : null}
       />
 
       <CheckBoxField
         name="licence"
         value={data.licence}
         onChange={handleChange}
-        error={errors.licence ? errors.licence : null}
+        error={error.licence ? error.licence : null}
       >
         <>
           Подтвердить <a>лицензионное соглашение</a>

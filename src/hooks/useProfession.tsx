@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
 
 import professionService from "../services/professionService";
@@ -18,7 +24,7 @@ type Provider = {
   children?: JSX.Element | JSX.Element[];
 };
 
-const ProfessionContext = React.createContext<IProfessionContext>({
+const ProfessionContext = createContext<IProfessionContext>({
   professions: [],
 });
 

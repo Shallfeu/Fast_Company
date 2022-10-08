@@ -1,4 +1,5 @@
 import React from "react";
+import { useQuality } from "../../../hooks/useQuality";
 import Quality from "./Quality";
 
 type QualitiesListProps = {
@@ -6,6 +7,8 @@ type QualitiesListProps = {
 };
 
 const QualitiesList: React.FC<QualitiesListProps> = ({ qualities }) => {
+  const { loading } = useQuality();
+  if (!loading) return <>Loading...</>;
   return (
     <>
       {qualities.map((quality: string) => (

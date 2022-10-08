@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
 
 import qualitieService from "../services/qualityService";
@@ -19,7 +25,7 @@ type Provider = {
   children?: JSX.Element | JSX.Element[];
 };
 
-const QualityContext = React.createContext<IQualityContext>({
+const QualityContext = createContext<IQualityContext>({
   qualities: [],
 });
 
@@ -68,7 +74,7 @@ export const QualityProvider: React.FC<Provider> = ({ children }) => {
 
   return (
     <QualityContext.Provider value={QualityProviderValue}>
-      {loading ? children : <h1>Loading...</h1>}
+      {children}
     </QualityContext.Provider>
   );
 };
