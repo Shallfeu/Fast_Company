@@ -113,10 +113,18 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
       if (code === 400) {
-        if (message === "EMAIL_EXISTS") {
+        if (message === "EMAIL_NOT_FOUND") {
           const errorObject = {
-            email: "Пользователь с таким Email уже существует",
+            email: "Пользователя с таким Email не существует",
           };
+
+          throw errorObject;
+        }
+        if (message === "INVALID_PASSWORD") {
+          const errorObject = {
+            password: "Неверный пароль",
+          };
+
           throw errorObject;
         }
       }
