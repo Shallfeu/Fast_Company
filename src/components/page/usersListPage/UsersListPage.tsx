@@ -15,7 +15,7 @@ export type StateData = {
   _id: string;
   email: string;
   name: string;
-  qualities: string[];
+  quality: string[];
   profession: string;
   completedMeetings: number;
   rate: number;

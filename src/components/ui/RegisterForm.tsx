@@ -14,6 +14,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 type dataState = {
   email: string;
+  name: string;
   password: string;
   profession: string;
   sex: string;
@@ -60,6 +61,11 @@ const RegisterForm: React.FC = () => {
       )
       .matches(/(?=.{8,})/, "Пароль должен содержать хотя бы 8 симолов"),
 
+    name: yup
+      .string()
+      .required("Имя обязательно для заполнения")
+      .min(3, "Имя должно состоять минимум из 3 символов"),
+
     email: yup
       .string()
       .required("Электронная почта почта обязательна для заполнения")
@@ -68,6 +74,7 @@ const RegisterForm: React.FC = () => {
 
   const [data, setData] = useState<dataState>({
     email: "",
+    name: "",
     password: "",
     profession: "",
     sex: "",
@@ -94,6 +101,7 @@ const RegisterForm: React.FC = () => {
 
   const [error, setError] = useState<{
     email?: string;
+    name?: string;
     password?: string;
     profession?: string;
     sex?: string;
@@ -147,6 +155,15 @@ const RegisterForm: React.FC = () => {
         name="email"
         value={data.email}
         error={error.email ? error.email : null}
+        onChange={handleChange}
+      />
+
+      <TextField
+        type="text"
+        label="Имя"
+        name="name"
+        value={data.name}
+        error={error.name ? error.name : null}
         onChange={handleChange}
       />
 

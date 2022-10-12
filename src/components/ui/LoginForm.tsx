@@ -46,6 +46,7 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState<{
     email?: string;
     password?: string;
+    manyAttempts?: string;
   }>({});
 
   const validate = () => {
@@ -79,6 +80,8 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  if (error.manyAttempts) console.log("dfgdf");
+
   return (
     <form onSubmit={handleSubmit}>
       <TextField
@@ -102,6 +105,12 @@ const LoginForm: React.FC = () => {
       <CheckBoxField name="stayOn" value={data.stayOn} onChange={handleChange}>
         Оставаться в сети
       </CheckBoxField>
+
+      {error.manyAttempts ? (
+        <p className="text-danger">{error.manyAttempts}</p>
+      ) : (
+        ""
+      )}
 
       <button
         type="submit"

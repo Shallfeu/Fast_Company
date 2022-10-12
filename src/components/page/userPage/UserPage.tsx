@@ -28,7 +28,7 @@ const UserPage: React.FC<UserPageProps> = ({ id }) => {
       <div className="row gutters-sm">
         <div className="col-md-4 mb-3">
           <UserCard user={user} />
-          <QualitiesCard data={user.qualities} />
+          <QualitiesCard data={user.quality} />
           <MeetingsCard value={user.completedMeetings} />
         </div>
         <div className="col-md-8">

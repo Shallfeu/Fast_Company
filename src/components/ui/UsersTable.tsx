@@ -27,7 +27,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
     qualities: {
       path: "qualities",
       name: "Качества",
-      component: (user: StateData) => <Qualities qualities={user.qualities} />,
+      component: (user: StateData) => <Qualities qualities={user.quality} />,
     },
 
     profession: {
