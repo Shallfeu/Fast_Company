@@ -6,6 +6,9 @@ const NavBar: React.FC = () => {
   const { currentUser } = useAuth();
 
   console.log(currentUser, "nav");
+  //Постоянный null
+  // Я думал, что все компоненты связаны и если один одновился, зависимые от него также одновляются
+  // но этого не происходит. (пишу про currentUser от которого зависим NavBar, а обновляется переменная в useAuth)
 
   return (
     <nav className="navbar bg-light mb-3">

@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
     completedMeetings: number;
   }) => {
     try {
-      const { content } = await userService.create(data);
+      const { content } = await userService.create(data); //Тут та же проблема, что и ниже
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
@@ -78,7 +78,9 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
   const getUserData = async () => {
     try {
       const { content } = await userService.getCurrentUser();
-      setCurrentUser(content);
+      console.log(content, "content"); // Тут значение приходит отлично, т.е. данные есть
+      setCurrentUser(content); // Тут они должны установится в State, но по логу ниже этого не происходит
+      console.log(currentUser, "getUserData"); // Постоянно null. Причина в ассинхонности setState?
     } catch (error) {
       errorCatcher(error);
     }
@@ -182,7 +184,8 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
     [signUp, signIn, currentUser]
   );
 
-  console.log(currentUser, "auth");
+  console.log(currentUser, "auth"); //при первых рендерах возвращает null,
+  //далее обновляется и возвращает значение, но оно не доходит до NavBar
 
   return (
     <AuthContext.Provider value={AuthProviderValue}>
