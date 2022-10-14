@@ -1,37 +1,24 @@
 import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 
-import API from "../../../api";
-
-import SelectField from "../form/SelectField";
 import TextAreaField from "../form/TextAreaField";
 
 type dataState = {
-  userId: string;
   content: string;
 };
 
 type CommentFormProps = {
-  onSubmit: (data: { userId: string; content: string }) => void;
-};
-
-const initialState = {
-  userId: "",
-  content: "",
+  onSubmit: (data: { content: string }) => void;
 };
 
 const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   const validateScheme = yup.object().shape({
     content: yup.string().required("Нельзя отправлять пустые комментарии"),
-    userId: yup.string().required("Пользователь должен быть выбран"),
   });
 
-  const [users, setUsers] = useState();
-
-  const [data, setData] = useState<dataState>(initialState);
+  const [data, setData] = useState<dataState>({ content: "" });
 
   const [errors, setErrors] = useState<{
-    userId?: string;
     content?: string;
   }>({});
 
@@ -46,17 +33,6 @@ const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   const isValid = Object.keys(errors).length === 0;
 
   useEffect(() => {
-    API.users.fetchAll().then((data) => {
-      setUsers(
-        data.map((user: { name: string; _id: string }) => ({
-          label: user.name,
-          value: user._id,
-        }))
-      );
-    });
-  }, []);
-
-  useEffect(() => {
     validate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
@@ -66,7 +42,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   };
 
   const clearArea = () => {
-    setData(initialState);
+    setData({ content: "" });
     setErrors({});
   };
 
@@ -78,25 +54,13 @@ const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
     clearArea();
   };
 
-  if (!users) return <h4>Loading...</h4>;
-
   return (
     <form onSubmit={handleSubmit}>
-      <SelectField
-        label=""
-        value={data.userId}
-        onChange={handleChange}
-        name="userId"
-        defaultOption="Выберите пользователя"
-        options={users}
-        error={errors.userId ? errors.userId : null}
-      />
-
       <TextAreaField
         label="Сообщение"
         name="content"
         rows={3}
-        value={data.content}
+        value={data?.content || ""}
         error={errors.content ? errors.content : null}
         onChange={handleChange}
       />

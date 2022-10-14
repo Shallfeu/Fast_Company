@@ -14,7 +14,7 @@ type dataState = {
 };
 
 const LoginForm: React.FC = () => {
-  const history = useHistory();
+  const history = useHistory<any>();
   const { signIn } = useAuth();
 
   const validateScheme = yup.object().shape({
@@ -73,8 +73,13 @@ const LoginForm: React.FC = () => {
     const isValid = validate();
     if (!isValid) return null;
     try {
-      await signIn(data);
-      history.push("/");
+      signIn(data);
+      if (
+        history.location.state &&
+        history.location.state.from.pathname !== "/login"
+      )
+        history.push(history.location.state.from.pathname);
+      else history.push("/");
     } catch (error: any) {
       setError(error);
     }

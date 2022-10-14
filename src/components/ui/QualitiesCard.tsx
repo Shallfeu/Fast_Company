@@ -6,7 +6,6 @@ type QualitiesCardProps = {
 };
 
 const QualitiesCard: React.FC<QualitiesCardProps> = ({ data }) => {
-  console.log(data);
   return (
     <div className="card mb-3">
       <div className="card-body d-flex flex-column justify-content-center text-center">

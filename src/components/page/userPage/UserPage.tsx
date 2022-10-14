@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from "react";
-import API from "../../../api";
-
-import { StateData } from "../usersListPage/UsersListPage";
+import React from "react";
 
 import UserCard from "../../ui/UserCard";
 import QualitiesCard from "../../ui/QualitiesCard";
 import MeetingsCard from "../../ui/MeetingsCard";
 import Comments from "../../ui/Comments";
+import { useUsers } from "../../../hooks/useUsers";
+import { CommentProvider } from "../../../hooks/useComment";
 
 type UserPageProps = {
   id: string;
 };
 
 const UserPage: React.FC<UserPageProps> = ({ id }) => {
-  const [user, setUser] = useState<StateData>();
+  const { getUserById } = useUsers();
 
-  useEffect(() => {
-    API.users.getById(id).then((data) => setUser(data));
-  }, []);
+  const user = getUserById(id);
 
   if (!user) {
     return <h1>Loading...</h1>;
@@ -32,7 +29,9 @@ const UserPage: React.FC<UserPageProps> = ({ id }) => {
           <MeetingsCard value={user.completedMeetings} />
         </div>
         <div className="col-md-8">
-          <Comments />
+          <CommentProvider>
+            <Comments />
+          </CommentProvider>
         </div>
       </div>
     </div>

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useAuth } from "../../../hooks/useAuth";
+import { useUsers } from "../../../hooks/useUsers";
 
-import API from "../../../api";
 import { date } from "../../../utils/date";
-
-import { StateData } from "../../page/usersListPage/UsersListPage";
 
 type CommentProps = {
   userId: string;
@@ -20,12 +19,11 @@ const Comment: React.FC<CommentProps> = ({
   content,
   onDelete,
 }) => {
-  const [user, setUser] = useState<StateData>();
-  useEffect(() => {
-    API.users.getById(userId).then((data) => setUser(data));
-  }, [userId]);
+  const { getUserById } = useUsers();
+  const { currentUser } = useAuth();
+  const user = getUserById(userId);
 
-  if (!user) return <h4>Loading...</h4>;
+  if (!user || !currentUser) return <>Loading...</>;
 
   return (
     <div className="bg-light card-body  mb-3">
@@ -33,11 +31,7 @@ const Comment: React.FC<CommentProps> = ({
         <div className="col">
           <div className="d-flex flex-start ">
             <img
-              src={`https://avatars.dicebear.com/api/avataaars/${(
-                Math.random() + 1
-              )
-                .toString(36)
-                .substring(7)}.svg`}
+              src={user.image}
               className="rounded-circle shadow-1-strong me-3"
               alt="avatar"
               width="150"
@@ -50,13 +44,15 @@ const Comment: React.FC<CommentProps> = ({
                     {user.name}
                     <span className="small"> - {date(time)}</span>
                   </p>
-                  <button
-                    type="button"
-                    className="btn btn-sm text-primary d-flex align-items-center"
-                    onClick={() => onDelete(id)}
-                  >
-                    <i className="bi bi-x-lg"></i>
-                  </button>
+                  {currentUser._id === userId && (
+                    <button
+                      type="button"
+                      className="btn btn-sm text-primary d-flex align-items-center"
+                      onClick={() => onDelete(id)}
+                    >
+                      <i className="bi bi-x-lg"></i>
+                    </button>
+                  )}
                 </div>
                 <p className="small mb-0">{content}</p>
               </div>

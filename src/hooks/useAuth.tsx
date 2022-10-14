@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import localStorageService from "../services/localStorageService";
 import userService from "../services/userService";
@@ -13,6 +14,8 @@ import userService from "../services/userService";
 type IAuthContext = {
   signUp: ({ email, password }: { email: string; password: string }) => void;
   signIn: ({ email, password }: { email: string; password: string }) => void;
+  updateData: (data: any) => void;
+  logOut: () => void;
   currentUser: User | null;
 };
 
@@ -20,9 +23,10 @@ type Provider = {
   children?: JSX.Element | JSX.Element[];
 };
 
-type User = {
+export type User = {
   completedMeetings: number;
   email: string;
+  image: string;
   licence: boolean;
   name: string;
   password: string;
@@ -43,6 +47,8 @@ export const httpAuth = axios.create({
 const AuthContext = createContext<IAuthContext>({
   signUp: async () => "void",
   signIn: async () => "void",
+  updateData: async () => "void",
+  logOut: () => "void",
   currentUser: null,
 });
 
@@ -51,6 +57,8 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider: React.FC<Provider> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   const errorCatcher = (error: any) => {
     const { message } = error.response.data;
@@ -64,11 +72,23 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
     _id: string;
     email: string;
     password: string;
+    image: string;
     rate: number;
     completedMeetings: number;
   }) => {
     try {
-      const { content } = await userService.create(data); //Тут та же проблема, что и ниже
+      const { content } = await userService.create(data);
+      setCurrentUser(content);
+    } catch (error) {
+      errorCatcher(error);
+    } finally {
+      setLoading(true);
+    }
+  };
+
+  const updateData = async (data: any) => {
+    try {
+      const { content } = await userService.update(data);
       setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
@@ -78,11 +98,11 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
   const getUserData = async () => {
     try {
       const { content } = await userService.getCurrentUser();
-      console.log(content, "content"); // Тут значение приходит отлично, т.е. данные есть
-      setCurrentUser(content); // Тут они должны установится в State, но по логу ниже этого не происходит
-      console.log(currentUser, "getUserData"); // Постоянно null. Причина в ассинхонности setState?
+      setCurrentUser(content);
     } catch (error) {
       errorCatcher(error);
+    } finally {
+      setLoading(true);
     }
   };
 
@@ -107,6 +127,9 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
         _id: data.localId,
         email,
         password,
+        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+          .toString(36)
+          .substring(7)}.svg`,
         rate: randomInt(1, 5),
         completedMeetings: randomInt(0, 200),
         ...rest,
@@ -141,7 +164,7 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
         returnSecureToken: true,
       });
       localStorageService.setTokens(data);
-      getUserData();
+      await getUserData();
     } catch (error: any) {
       errorCatcher(error);
       const { code, message } = error.response.data.error;
@@ -166,10 +189,16 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
     }
   };
 
+  const logOut = () => {
+    localStorageService.removeAuthData();
+    setCurrentUser(null);
+    history.push("/");
+  };
+
   useEffect(() => {
     if (localStorageService.getAccessToken()) {
       getUserData();
-    }
+    } else setLoading(true);
   }, []);
 
   useEffect(() => {
@@ -180,16 +209,13 @@ export const AuthProvider: React.FC<Provider> = ({ children }) => {
   }, [error]);
 
   const AuthProviderValue = useMemo(
-    () => ({ signUp, signIn, currentUser }),
-    [signUp, signIn, currentUser]
+    () => ({ signUp, signIn, currentUser, logOut, updateData }),
+    [signUp, signIn, currentUser, logOut, updateData]
   );
-
-  console.log(currentUser, "auth"); //при первых рендерах возвращает null,
-  //далее обновляется и возвращает значение, но оно не доходит до NavBar
 
   return (
     <AuthContext.Provider value={AuthProviderValue}>
-      {children}
+      {loading ? children : <>Loading...</>}
     </AuthContext.Provider>
   );
 };

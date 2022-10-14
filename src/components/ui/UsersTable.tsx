@@ -2,14 +2,13 @@ import React from "react";
 
 import { StateData } from "../page/usersListPage/UsersListPage";
 import BookMark from "../common/BookMark";
-import Qualities from "./qualities";
 import Table from "../common/table";
 import Profession from "./Profession";
+import QualitiesList from "./qualities/QualitiesList";
 
 export type UsersTableProps = {
   users: StateData[];
   currentSort: { path: string; order: "asc" | "desc" };
-  onDelete: (userId: string) => void;
   onToggleMark: (userId: string) => void;
   onSort: (item: { path: string; order: "asc" | "desc" }) => void;
 };
@@ -17,7 +16,6 @@ export type UsersTableProps = {
 const UsersTable: React.FC<UsersTableProps> = ({
   users,
   currentSort,
-  onDelete,
   onToggleMark,
   onSort,
 }) => {
@@ -27,7 +25,9 @@ const UsersTable: React.FC<UsersTableProps> = ({
     qualities: {
       path: "qualities",
       name: "Качества",
-      component: (user: StateData) => <Qualities qualities={user.quality} />,
+      component: (user: StateData) => (
+        <QualitiesList qualities={user.quality} />
+      ),
     },
 
     profession: {
@@ -49,18 +49,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
           status={user?.bookmark}
           onToggleMark={() => onToggleMark(user?._id)}
         />
-      ),
-    },
-
-    delete: {
-      component: (user: StateData) => (
-        <button
-          type="button"
-          className="btn btn-danger"
-          onClick={() => onDelete(user?._id)}
-        >
-          delete
-        </button>
       ),
     },
   };

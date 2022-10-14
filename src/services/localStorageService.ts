@@ -29,12 +29,20 @@ export const getExpiresToken = () => Number(localStorage.getItem(EXPIRES_KEY));
 
 export const getUserId = () => localStorage.getItem(USER_KEY);
 
+export const removeAuthData = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(REFRESH_KEY);
+  localStorage.removeItem(EXPIRES_KEY);
+  localStorage.removeItem(USER_KEY);
+};
+
 const localStorageService = {
   setTokens,
   getAccessToken,
   getRefreshToken,
   getExpiresToken,
   getUserId,
+  removeAuthData,
 };
 
 export default localStorageService;

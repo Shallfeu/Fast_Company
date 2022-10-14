@@ -14,6 +14,7 @@ type HookProps = {
 
 const Users: React.FC = () => {
   const { userId, edit } = useParams<HookProps>();
+
   return (
     <UserProvider>
       {userId ? (

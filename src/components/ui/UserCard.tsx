@@ -1,32 +1,35 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { useProfession } from "../../hooks/useProfession";
 
-import { StateData } from "../page/usersListPage/UsersListPage";
+import { IUser } from "../../hooks/useUsers";
 
 type UserCardProps = {
-  user: StateData;
+  user: IUser;
 };
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
+  const { currentUser } = useAuth();
+  const { professions } = useProfession();
+
   return (
     <div className="card mb-3">
       <div className="card-body">
-        <Link to={`/users/${user._id}/edit`}>
-          <button
-            type="button"
-            className="position-absolute top-0 end-0 btn btn-light btn-sm"
-          >
-            <i className="bi bi-gear"></i>
-          </button>
-        </Link>
+        {currentUser && currentUser._id === user._id && (
+          <Link to={`/users/${currentUser._id}/edit`}>
+            <button
+              type="button"
+              className="position-absolute top-0 end-0 btn btn-light btn-sm"
+            >
+              <i className="bi bi-gear"></i>
+            </button>
+          </Link>
+        )}
 
         <div className="d-flex flex-column align-items-center text-center position-relative">
           <img
-            src={`https://avatars.dicebear.com/api/avataaars/${(
-              Math.random() + 1
-            )
-              .toString(36)
-              .substring(7)}.svg`}
+            src={user.image}
             className="rounded-circle shadow-1-strong me-3"
             alt="avatar"
             width="150"
@@ -34,7 +37,10 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
           />
           <div className="mt-3">
             <h4>{user.name}</h4>
-            <p className="text-secondary mb-1">Профессия: {user.profession}</p>
+            <p className="text-secondary mb-1">
+              Профессия:{" "}
+              {professions.find((prof) => prof._id === user.profession)?.name}
+            </p>
             <p
               className={`text-${
                 user.sex === "male" ? "primary" : "danger"

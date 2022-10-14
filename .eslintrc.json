@@ -98,6 +98,7 @@
     "object-shorthand": "off",
     "no-await-in-loop": "off",
     "@typescript-eslint/no-throw-literal": "off",
-    "spaced-comment": "off"
+    "spaced-comment": "off",
+    "@typescript-eslint/no-use-before-define": "off"
   }
 }

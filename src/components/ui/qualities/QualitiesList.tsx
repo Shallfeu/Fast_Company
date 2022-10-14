@@ -9,9 +9,10 @@ type QualitiesListProps = {
 const QualitiesList: React.FC<QualitiesListProps> = ({ qualities }) => {
   const { loading } = useQuality();
   if (!loading) return <>Loading...</>;
+
   return (
     <>
-      {qualities.map((quality: string) => (
+      {qualities.map((quality) => (
         <Quality key={quality} id={quality} />
       ))}
     </>

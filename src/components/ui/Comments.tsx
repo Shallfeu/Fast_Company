@@ -1,8 +1,7 @@
 import { orderBy } from "lodash";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
 
-import API from "../../api";
+import { useComment } from "../../hooks/useComment";
 
 import CommentForm from "../common/comments/CommentForm";
 import CommentsList from "../common/comments/CommentsList";
@@ -15,43 +14,16 @@ export type CommentState = {
   created_at: string;
 };
 
-type HookProps = {
-  userId: string;
-};
-
 const Comments: React.FC = () => {
-  const { userId } = useParams<HookProps>();
+  const { createComment, comments, deleteComment } = useComment();
 
-  const [comments, setComments] = useState<CommentState[]>([]);
-
-  useEffect(() => {
-    API.comments.fetchAll().then((data) => setComments(data));
-  }, []);
-
-  const handleSubmit = (data: { userId: string; content: string }) => {
-    API.comments
-      .add({
-        ...data,
-        pageId: userId,
-      })
-      .then((data) => {
-        setComments([...comments, data]);
-      });
+  const handleSubmit = (data: { content: string }) => {
+    createComment(data);
   };
 
   const handleDelete = (commentId: string) => {
-    API.comments.remove(commentId).then((id) => {
-      setComments(comments.filter((comment) => comment._id === id));
-    });
+    deleteComment(commentId);
   };
-
-  // const handleSortByDate = (items: CommentState[]) => {
-  //   return items.sort(
-  //     (a, b) =>
-  //       Number(a["created_at" as keyof typeof a]) -
-  //       Number(b["created_at" as keyof typeof b])
-  //   );
-  // };
 
   const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
 

@@ -10,6 +10,7 @@ import { ProfProps } from ".";
 
 import { useUsers } from "../../../hooks/useUsers";
 import { useProfession } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 export type StateData = {
   _id: string;
@@ -25,6 +26,12 @@ export type StateData = {
 
 const UsersListPage: React.FC = () => {
   const pageSize = 4;
+
+  const { currentUser } = useAuth();
+
+  const { professions, loading: profLoading } = useProfession();
+
+  const { users } = useUsers();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -42,18 +49,9 @@ const UsersListPage: React.FC = () => {
     order: "asc",
   });
 
-  const { users } = useUsers();
-
-  const { professions } = useProfession();
-
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedProf]);
-
-  const handleDelete = (userId: string) => {
-    // setUsers(users.filter((user) => user?._id !== userId));
-    console.log(userId);
-  };
 
   const handleToggleMark = (userId: string) => {
     const newArray = users.map((user) => {
@@ -81,16 +79,23 @@ const UsersListPage: React.FC = () => {
     setCurrentPage(currentPage - 1);
   };
 
+  const fillterUsers = (data: StateData[]) => {
+    const filteredUsers = selectedProf
+      ? data.filter((user) => user.profession === selectedProf._id)
+      : searchQuery
+      ? data.filter((user) =>
+          user.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : data;
+    if (currentUser) return data.filter((user) => user._id !== currentUser._id);
+
+    return filteredUsers;
+  };
+
   const handleSort = (item: { path: string; order: "asc" | "desc" }) =>
     setSortBy(item);
 
-  const filteredUsers = selectedProf
-    ? users.filter((user) => user.profession === selectedProf._id)
-    : searchQuery
-    ? users.filter((user) =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : users;
+  const filteredUsers = fillterUsers(users);
 
   const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], sortBy.order);
 
@@ -101,7 +106,7 @@ const UsersListPage: React.FC = () => {
   return (
     <div className="d-flex">
       <div className="d-flex flex-column flex-shrink-o p-3">
-        {professions && (
+        {professions && profLoading && (
           <>
             <GroupList
               selectedItem={selectedProf}
@@ -132,7 +137,6 @@ const UsersListPage: React.FC = () => {
           <UsersTable
             users={usersCrop}
             currentSort={sortBy}
-            onDelete={handleDelete}
             onToggleMark={handleToggleMark}
             onSort={handleSort}
           />
