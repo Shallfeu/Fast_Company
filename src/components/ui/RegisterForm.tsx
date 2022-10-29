@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-
 import * as yup from "yup";
+
+import { useHistory } from "react-router-dom";
+import { useAppSelector } from "../../redux/store/hooks";
+import { useAuth } from "../../hooks/useAuth";
 
 import TextField from "../common/form/TextField";
 import SelectField from "../common/form/SelectField";
 import RadioField from "../common/form/RadioField";
 import MultiSelectField from "../common/form/MultiSelectField";
 import CheckBoxField from "../common/form/CheckBoxField";
-import { useQuality } from "../../hooks/useQuality";
-import { useProfession } from "../../hooks/useProfession";
-import { useAuth } from "../../hooks/useAuth";
+import { getQualities } from "../../redux/qualitiesSlice/qualitySlice";
+import { getProfessions } from "../../redux/professionSlice/professionSlice";
 
 type dataState = {
   email: string;
@@ -82,23 +83,6 @@ const RegisterForm: React.FC = () => {
     licence: false,
   });
 
-  const { signUp } = useAuth();
-
-  const { qualities } = useQuality();
-
-  const qualitiesList = qualities.map((quality) => ({
-    label: quality.name,
-    value: quality._id,
-    color: quality.color,
-  }));
-
-  const { professions } = useProfession();
-
-  const professionsList = professions.map((profession) => ({
-    label: profession.name,
-    value: profession._id,
-  }));
-
   const [error, setError] = useState<{
     email?: string;
     name?: string;
@@ -109,6 +93,29 @@ const RegisterForm: React.FC = () => {
     licence?: string;
   }>({});
 
+  const { signUp } = useAuth();
+
+  const professions = useAppSelector(getProfessions());
+  const qualities = useAppSelector(getQualities());
+
+  if (!qualities || !professions) return <>Loading...</>;
+
+  useEffect(() => {
+    validate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  const qualitiesList = qualities.map((quality) => ({
+    label: quality.name,
+    value: quality._id,
+    color: quality.color,
+  }));
+
+  const professionsList = professions.map((profession) => ({
+    label: profession.name,
+    value: profession._id,
+  }));
+
   const validate = () => {
     validateScheme
       .validate(data)
@@ -118,11 +125,6 @@ const RegisterForm: React.FC = () => {
   };
 
   const isValid = Object.keys(error).length === 0;
-
-  useEffect(() => {
-    validate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
 
   const handleChange = (target: any) => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
@@ -157,7 +159,6 @@ const RegisterForm: React.FC = () => {
         error={error.email ? error.email : null}
         onChange={handleChange}
       />
-
       <TextField
         type="text"
         label="Имя"
@@ -166,7 +167,6 @@ const RegisterForm: React.FC = () => {
         error={error.name ? error.name : null}
         onChange={handleChange}
       />
-
       <TextField
         type="password"
         label="Пароль"
@@ -175,7 +175,6 @@ const RegisterForm: React.FC = () => {
         error={error.password ? error.password : null}
         onChange={handleChange}
       />
-
       <SelectField
         label="Выберите вашу профессию"
         name="profession"
@@ -185,7 +184,6 @@ const RegisterForm: React.FC = () => {
         defaultOption="Choose..."
         error={error.profession ? error.profession : null}
       />
-
       <RadioField
         options={[
           { name: "Male", value: "male" },
@@ -198,7 +196,6 @@ const RegisterForm: React.FC = () => {
         error={error.sex ? error.sex : null}
         onChange={handleChange}
       />
-
       <MultiSelectField
         label="Выберите ваши качества"
         defaultValue={data.quality}
@@ -207,7 +204,6 @@ const RegisterForm: React.FC = () => {
         onChange={handleChange}
         error={error.quality ? error.quality : null}
       />
-
       <CheckBoxField
         name="licence"
         value={data.licence}
@@ -218,7 +214,6 @@ const RegisterForm: React.FC = () => {
           Подтвердить <a>лицензионное соглашение</a>
         </>
       </CheckBoxField>
-
       <button
         type="submit"
         disabled={!isValid}

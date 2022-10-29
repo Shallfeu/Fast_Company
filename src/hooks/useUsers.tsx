@@ -8,6 +8,7 @@ import React, {
 import { toast } from "react-toastify";
 
 import userService from "../services/userService";
+import { useAuth } from "./useAuth";
 
 export type IUser = {
   _id: string;
@@ -42,6 +43,16 @@ const UserProvider: React.FC<Provider> = ({ children }) => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (loading && currentUser) {
+      const newUsers = [...users];
+      const indexNew = newUsers.findIndex((el) => el._id === currentUser._id);
+      newUsers[indexNew] = currentUser;
+      setUsers(newUsers);
+    }
+  }, [currentUser]);
 
   const errorCatcher = (error: any) => {
     const { message } = error.response.data;

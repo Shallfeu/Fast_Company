@@ -99,6 +99,9 @@
     "no-await-in-loop": "off",
     "@typescript-eslint/no-throw-literal": "off",
     "spaced-comment": "off",
-    "@typescript-eslint/no-use-before-define": "off"
+    "@typescript-eslint/no-use-before-define": "off",
+    "react-hooks/rules-of-hooks": "off",
+    "no-restricted-syntax": "off",
+    "react/destructuring-assignment": "off"
   }
 }

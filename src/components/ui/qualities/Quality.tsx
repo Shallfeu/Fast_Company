@@ -1,20 +1,20 @@
 import React from "react";
-import { useQuality } from "../../../hooks/useQuality";
 
 type QualityProps = {
-  id: string;
+  data: {
+    name: string;
+    _id: string;
+    color: string;
+  };
 };
 
-const Quality: React.FC<QualityProps> = ({ id }) => {
-  const { loading, getQualityById } = useQuality();
-  const quality = getQualityById(id);
+const Quality: React.FC<QualityProps> = ({ data }) => {
+  const { _id, color, name } = data;
 
-  return loading ? (
-    <span key={quality.id} className={`badge m-1 bg-${quality.color}`}>
-      {quality.name}
+  return (
+    <span key={_id} className={`badge m-1 bg-${color}`}>
+      {name}
     </span>
-  ) : (
-    <>Loading...</>
   );
 };
 

@@ -1,14 +1,14 @@
 import React from "react";
-import { useProfession } from "../../hooks/useProfession";
+import { useAppSelector } from "../../redux/store/hooks";
+import { getProfessionById } from "../../redux/professionSlice/professionSlice";
 
 type ProfessionProps = {
   id: string;
 };
 
 const Profession: React.FC<ProfessionProps> = ({ id }) => {
-  const { loading, getProfessionById } = useProfession();
-  const profession = getProfessionById(id);
-  return loading ? <>{profession.name}</> : <>Loading...</>;
+  const profession = useAppSelector(getProfessionById(id));
+  return <>{profession?.name}</>;
 };
 
 export default Profession;

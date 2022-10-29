@@ -8,8 +8,17 @@ import SelectField from "../../common/form/SelectField";
 import TextField from "../../common/form/TextField";
 import BackHistoryBtn from "../../common/BackHistoryBtn";
 import { useQuality } from "../../../hooks/useQuality";
-import { useProfession } from "../../../hooks/useProfession";
 import { useAuth } from "../../../hooks/useAuth";
+
+import { useAppSelector } from "../../../redux/store/hooks";
+import {
+  getQualities,
+  getQualitiesLoading,
+} from "../../../redux/qualitiesSlice/qualitySlice";
+import {
+  getProfessions,
+  getProfessionsLoading,
+} from "../../../redux/professionSlice/professionSlice";
 
 type HookProps = {
   userId: string;
@@ -17,9 +26,8 @@ type HookProps = {
 
 const EditPage: React.FC = () => {
   const hist = useHistory();
-  const { userId } = useParams<HookProps>();
 
-  const { currentUser, updateData } = useAuth();
+  const { userId } = useParams<HookProps>();
 
   const [data, setData] = useState<{
     name: string;
@@ -27,13 +35,7 @@ const EditPage: React.FC = () => {
     profession: string;
     sex: string;
     quality: { label: string; value: string; color: string }[];
-  }>({
-    name: "",
-    email: "",
-    profession: "",
-    sex: "",
-    quality: [],
-  });
+  } | null>();
 
   const [errors, setErrors] = useState<{
     name?: string;
@@ -42,6 +44,18 @@ const EditPage: React.FC = () => {
     sex?: string;
     quality?: string;
   }>({});
+
+  const qualities = useAppSelector(getQualities());
+  const qLoad = useAppSelector(getQualitiesLoading());
+
+  const professions = useAppSelector(getProfessions());
+  const pLoad = useAppSelector(getProfessionsLoading());
+
+  if (!qualities || !professions) return <>Loading...</>;
+
+  const { currentUser, updateData } = useAuth();
+
+  const { getQualityById } = useQuality();
 
   const validateScheme = yup.object().shape({
     email: yup
@@ -52,13 +66,20 @@ const EditPage: React.FC = () => {
     name: yup.string().required("Имя должно быть введено"),
   });
 
+  function validate() {
+    validateScheme
+      .validate(data)
+      .then(() => setErrors({}))
+      .catch((err) => setErrors({ [err.path]: err.message }));
+    return Object.keys(errors).length === 0;
+  }
+
   useEffect(() => {
     validate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
-    if (currentUser)
+    if (qLoad && pLoad && currentUser) {
       setData({
         name: currentUser.name,
         email: currentUser.email,
@@ -68,22 +89,13 @@ const EditPage: React.FC = () => {
           currentUser.quality.map((qual) => getQualityById(qual))
         ),
       });
+    }
   }, []);
 
-  const { qualities, getQualityById } = useQuality();
-
-  const { professions } = useProfession();
+  if (!data) return <>loading</>;
 
   if (currentUser?._id !== userId)
     return <Redirect to={`/users/${currentUser?._id}/edit`} />;
-
-  function validate() {
-    validateScheme
-      .validate(data)
-      .then(() => setErrors({}))
-      .catch((err) => setErrors({ [err.path]: err.message }));
-    return Object.keys(errors).length === 0;
-  }
 
   function transformQual(data: { name: string; _id: string; color: string }[]) {
     return data.map((qual) => ({
@@ -101,41 +113,11 @@ const EditPage: React.FC = () => {
   }
 
   const handleChange = (target: any) => {
-    setData((prevState) => ({ ...prevState, [target.name]: target.value }));
+    setData((prevState: any) => ({
+      ...prevState,
+      [target.name]: target.value,
+    }));
   };
-
-  // const getProfessionById = (id: string) => {
-  //   const prof = professions.filter((prof) => prof._id === id);
-  //   return prof;
-  // };
-
-  // const getQualities = (
-  //   elements: {
-  //     label: string;
-  //     value: string;
-  //     color: string;
-  //   }[]
-  // ) => {
-  //   const qualitiesArray: {
-  //     _id: string;
-  //     name: string;
-  //     color: string;
-  //   }[] = [];
-
-  //   elements.forEach((elem: { value: string; label: string }) => {
-  //     transformQual(qualities).forEach((qual) => {
-  //       if (elem.value === qual.value) {
-  //         qualitiesArray.push({
-  //           _id: qual.value,
-  //           name: qual.label,
-  //           color: qual.color,
-  //         });
-  //       }
-  //     });
-  //   });
-
-  //   return qualitiesArray;
-  // };
 
   const handleRefresh = (e: any) => {
     e.preventDefault();
@@ -153,11 +135,8 @@ const EditPage: React.FC = () => {
   };
 
   const isValid = Object.keys(errors).length === 0;
-
   const transQual = transformQual(qualities);
   const transProf = transformProf(professions);
-
-  if (!data) return <>loading</>;
 
   return (
     <div className="container mt-5">
@@ -210,14 +189,16 @@ const EditPage: React.FC = () => {
               onChange={handleChange}
             />
 
-            <MultiSelectField
-              label="Выберите ваши качества"
-              defaultValue={data.quality}
-              options={transQual}
-              name="quality"
-              onChange={handleChange}
-              error={errors.quality ? errors.quality : null}
-            />
+            {qLoad && (
+              <MultiSelectField
+                label="Выберите ваши качества"
+                defaultValue={data.quality}
+                options={transQual}
+                name="quality"
+                onChange={handleChange}
+                error={errors.quality ? errors.quality : null}
+              />
+            )}
 
             <button
               type="submit"

@@ -9,8 +9,12 @@ import UsersTable from "../../ui/UsersTable";
 import { ProfProps } from ".";
 
 import { useUsers } from "../../../hooks/useUsers";
-import { useProfession } from "../../../hooks/useProfession";
 import { useAuth } from "../../../hooks/useAuth";
+import { useAppSelector } from "../../../redux/store/hooks";
+import {
+  getProfessions,
+  getProfessionsLoading,
+} from "../../../redux/professionSlice/professionSlice";
 
 export type StateData = {
   _id: string;
@@ -29,7 +33,8 @@ const UsersListPage: React.FC = () => {
 
   const { currentUser } = useAuth();
 
-  const { professions, loading: profLoading } = useProfession();
+  const professions = useAppSelector(getProfessions());
+  const pLoad = useAppSelector(getProfessionsLoading());
 
   const { users } = useUsers();
 
@@ -106,7 +111,7 @@ const UsersListPage: React.FC = () => {
   return (
     <div className="d-flex">
       <div className="d-flex flex-column flex-shrink-o p-3">
-        {professions && profLoading && (
+        {professions && pLoad && (
           <>
             <GroupList
               selectedItem={selectedProf}

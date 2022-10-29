@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { useProfession } from "../../hooks/useProfession";
 
 import { IUser } from "../../hooks/useUsers";
+import { getProfessions } from "../../redux/professionSlice/professionSlice";
+import { useAppSelector } from "../../redux/store/hooks";
 
 type UserCardProps = {
   user: IUser;
@@ -11,7 +12,8 @@ type UserCardProps = {
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const { currentUser } = useAuth();
-  const { professions } = useProfession();
+  const professions = useAppSelector(getProfessions());
+  if (!professions) return <>Loading...</>;
 
   return (
     <div className="card mb-3">

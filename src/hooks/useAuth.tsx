@@ -35,6 +35,7 @@ export type User = {
   rate: number;
   sex: string;
   _id: string;
+  bookmark: boolean;
 };
 
 export const httpAuth = axios.create({

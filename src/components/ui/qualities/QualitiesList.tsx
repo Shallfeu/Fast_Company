@@ -1,5 +1,10 @@
-import React from "react";
-import { useQuality } from "../../../hooks/useQuality";
+import React, { useEffect } from "react";
+import {
+  getQualitiesLoading,
+  loadQualities,
+  getQualitiesByIds,
+} from "../../../redux/qualitiesSlice/qualitySlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/store/hooks";
 import Quality from "./Quality";
 
 type QualitiesListProps = {
@@ -7,13 +12,19 @@ type QualitiesListProps = {
 };
 
 const QualitiesList: React.FC<QualitiesListProps> = ({ qualities }) => {
-  const { loading } = useQuality();
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(loadQualities());
+  }, []);
+
+  const loading = useAppSelector(getQualitiesLoading());
   if (!loading) return <>Loading...</>;
+  const qualitiesList = useAppSelector(getQualitiesByIds(qualities));
 
   return (
     <>
-      {qualities.map((quality) => (
-        <Quality key={quality} id={quality} />
+      {qualitiesList.map((quality) => (
+        <Quality key={quality._id} data={quality} />
       ))}
     </>
   );

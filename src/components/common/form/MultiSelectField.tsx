@@ -18,7 +18,6 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   error,
   defaultValue,
 }) => {
-  if (defaultValue.length === 0) return <>Loading...</>;
   const getMultiSelectClasses = () =>
     `basic-multi-select ${error ? "is-invalid" : ""}`;
 
