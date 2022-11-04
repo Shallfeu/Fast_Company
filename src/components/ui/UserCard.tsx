@@ -1,17 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
 
-import { IUser } from "../../hooks/useUsers";
-import { getProfessions } from "../../redux/professionSlice/professionSlice";
-import { useAppSelector } from "../../redux/store/hooks";
+import { getProfessions } from "../../store/professionsSlice/selectors";
+import { useAppSelector } from "../../store/hooks";
+import { IUser } from "../../store/usersSlice/slice";
+import { getCurrentUserData } from "../../store/usersSlice/selectors";
 
 type UserCardProps = {
   user: IUser;
 };
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
-  const { currentUser } = useAuth();
+  const currentUser = useAppSelector(getCurrentUserData);
   const professions = useAppSelector(getProfessions());
   if (!professions) return <>Loading...</>;
 

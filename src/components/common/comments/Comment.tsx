@@ -1,8 +1,11 @@
 import React from "react";
-import { useAuth } from "../../../hooks/useAuth";
-import { useUsers } from "../../../hooks/useUsers";
+import { useAppSelector } from "../../../store/hooks";
 
 import { date } from "../../../utils/date";
+import {
+  getUserById,
+  getCurrentUserId,
+} from "../../../store/usersSlice/selectors";
 
 type CommentProps = {
   userId: string;
@@ -19,11 +22,10 @@ const Comment: React.FC<CommentProps> = ({
   content,
   onDelete,
 }) => {
-  const { getUserById } = useUsers();
-  const { currentUser } = useAuth();
-  const user = getUserById(userId);
+  const currentUserId = useAppSelector(getCurrentUserId);
+  const user = useAppSelector(getUserById(userId));
 
-  if (!user || !currentUser) return <>Loading...</>;
+  if (!user || !currentUserId) return <>Loading...</>;
 
   return (
     <div className="bg-light card-body  mb-3">
@@ -44,7 +46,7 @@ const Comment: React.FC<CommentProps> = ({
                     {user.name}
                     <span className="small"> - {date(time)}</span>
                   </p>
-                  {currentUser._id === userId && (
+                  {currentUserId === userId && (
                     <button
                       type="button"
                       className="btn btn-sm text-primary d-flex align-items-center"

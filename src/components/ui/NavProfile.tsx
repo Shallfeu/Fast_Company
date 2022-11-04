@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAppSelector } from "../../store/hooks";
+import { getCurrentUserData } from "../../store/usersSlice/selectors";
 
 const NavProfile: React.FC = () => {
-  const { currentUser } = useAuth();
+  const currentUser = useAppSelector(getCurrentUserData);
   const [open, setOpen] = useState(false);
 
-  if (!currentUser) return <>Loading...</>;
-
   const toggleMenu = () => setOpen((prevState) => !prevState);
+
+  if (!currentUser) return <>Loading...</>;
 
   return (
     <div role="button" className="dropdown" onClick={toggleMenu}>

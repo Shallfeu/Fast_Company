@@ -6,22 +6,10 @@ import React, {
   useState,
 } from "react";
 import { toast } from "react-toastify";
+import { IUser } from "../store/usersSlice/slice";
 
 import userService from "../services/userService";
 import { useAuth } from "./useAuth";
-
-export type IUser = {
-  _id: string;
-  email: string;
-  name: string;
-  quality: string[];
-  profession: string;
-  completedMeetings: number;
-  rate: number;
-  bookmark: boolean;
-  sex: string;
-  image: string;
-};
 
 type IUserContext = {
   users: IUser[];

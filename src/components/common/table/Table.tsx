@@ -1,10 +1,10 @@
 import React from "react";
-import { StateData } from "../../page/usersListPage/UsersListPage";
+import { IUser } from "../../../store/usersSlice/slice";
 import TableBody from "./TableBody";
 import TableHeader from "./TableHeader";
 
 export type TableProps = {
-  data: StateData[];
+  data: IUser[];
   selectedSort: { path: string; order: "asc" | "desc" };
   columns: ColomnsProps;
   onSort: (item: { path: string; order: "asc" | "desc" }) => void;
@@ -14,7 +14,7 @@ export type TableProps = {
 export type ColumnProp = {
   path: string;
   name: string;
-  component?: (user: StateData) => JSX.Element;
+  component?: (user: IUser) => JSX.Element;
 };
 
 export type ColomnsProps = {

@@ -1,13 +1,13 @@
 import React from "react";
 
-import { StateData } from "../page/usersListPage/UsersListPage";
 import BookMark from "../common/BookMark";
 import Table from "../common/table";
 import Profession from "./Profession";
 import QualitiesList from "./qualities/QualitiesList";
+import { IUser } from "../../store/usersSlice/slice";
 
 export type UsersTableProps = {
-  users: StateData[];
+  users: IUser[];
   currentSort: { path: string; order: "asc" | "desc" };
   onToggleMark: (userId: string) => void;
   onSort: (item: { path: string; order: "asc" | "desc" }) => void;
@@ -25,15 +25,13 @@ const UsersTable: React.FC<UsersTableProps> = ({
     qualities: {
       path: "qualities",
       name: "Качества",
-      component: (user: StateData) => (
-        <QualitiesList qualities={user.quality} />
-      ),
+      component: (user: IUser) => <QualitiesList qualities={user.qualities} />,
     },
 
     profession: {
       path: "profession",
       name: "Профессия",
-      component: (user: StateData) => <Profession id={user.profession} />,
+      component: (user: IUser) => <Profession id={user.profession} />,
     },
 
     completedMeetings: { path: "completedMeetings", name: "Встретился, раз" },
@@ -43,10 +41,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
     bookmark: {
       path: "bookmark",
       name: "Избранное",
-      component: (user: StateData) => (
+      component: (user: IUser) => (
         <BookMark
           _id={user?._id}
-          status={user?.bookmark}
+          status={user.bookmark ? user?.bookmark : null}
           onToggleMark={() => onToggleMark(user?._id)}
         />
       ),

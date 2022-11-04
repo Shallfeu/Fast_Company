@@ -7,18 +7,18 @@ import RadioField from "../../common/form/RadioField";
 import SelectField from "../../common/form/SelectField";
 import TextField from "../../common/form/TextField";
 import BackHistoryBtn from "../../common/BackHistoryBtn";
-import { useQuality } from "../../../hooks/useQuality";
-import { useAuth } from "../../../hooks/useAuth";
 
-import { useAppSelector } from "../../../redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   getQualities,
   getQualitiesLoading,
-} from "../../../redux/qualitiesSlice/qualitySlice";
+} from "../../../store/qualitiesSlice/selectors";
 import {
   getProfessions,
   getProfessionsLoading,
-} from "../../../redux/professionSlice/professionSlice";
+} from "../../../store/professionsSlice/selectors";
+import { getCurrentUserData } from "../../../store/usersSlice/selectors";
+import { UpdateData } from "../../../store/usersSlice/actions";
 
 type HookProps = {
   userId: string;
@@ -27,6 +27,8 @@ type HookProps = {
 const EditPage: React.FC = () => {
   const hist = useHistory();
 
+  const dispatch = useAppDispatch();
+
   const { userId } = useParams<HookProps>();
 
   const [data, setData] = useState<{
@@ -34,7 +36,7 @@ const EditPage: React.FC = () => {
     email: string;
     profession: string;
     sex: string;
-    quality: { label: string; value: string; color: string }[];
+    qualities: { label: string; value: string; color: string }[];
   } | null>();
 
   const [errors, setErrors] = useState<{
@@ -42,7 +44,7 @@ const EditPage: React.FC = () => {
     email?: string;
     profession?: string;
     sex?: string;
-    quality?: string;
+    qualities?: string;
   }>({});
 
   const qualities = useAppSelector(getQualities());
@@ -53,9 +55,7 @@ const EditPage: React.FC = () => {
 
   if (!qualities || !professions) return <>Loading...</>;
 
-  const { currentUser, updateData } = useAuth();
-
-  const { getQualityById } = useQuality();
+  const currentUser = useAppSelector(getCurrentUserData);
 
   const validateScheme = yup.object().shape({
     email: yup
@@ -79,15 +79,15 @@ const EditPage: React.FC = () => {
   }, [data]);
 
   useEffect(() => {
-    if (qLoad && pLoad && currentUser) {
+    if (qLoad && pLoad && currentUser && !data) {
       setData({
         name: currentUser.name,
         email: currentUser.email,
         profession: currentUser.profession,
         sex: currentUser.sex,
-        quality: transformQual(
-          currentUser.quality.map((qual) => getQualityById(qual))
-        ),
+        qualities: transformQual(
+          getQualitiesListByIds(currentUser.qualities)
+        ) || [{ label: "string", value: "string", color: "string" }],
       });
     }
   }, []);
@@ -97,12 +97,15 @@ const EditPage: React.FC = () => {
   if (currentUser?._id !== userId)
     return <Redirect to={`/users/${currentUser?._id}/edit`} />;
 
-  function transformQual(data: { name: string; _id: string; color: string }[]) {
-    return data.map((qual) => ({
-      label: qual.name,
-      value: qual._id,
-      color: qual.color,
-    }));
+  function transformQual(
+    data: { name: string; _id: string; color: string }[] | null
+  ) {
+    if (data)
+      return data.map((qual) => ({
+        label: qual.name,
+        value: qual._id,
+        color: qual.color,
+      }));
   }
 
   function transformProf(data: { name: string; _id: string }[]) {
@@ -110,6 +113,21 @@ const EditPage: React.FC = () => {
       label: qual.name,
       value: qual._id,
     }));
+  }
+
+  function getQualitiesListByIds(qualitiesIds: any) {
+    const qualitiesArray = [];
+    if (!qualities) return null;
+    for (const qualId of qualitiesIds) {
+      for (const quality of qualities) {
+        if (quality._id === qualId) {
+          qualitiesArray.push(quality);
+          break;
+        }
+      }
+    }
+
+    return qualitiesArray;
   }
 
   const handleChange = (target: any) => {
@@ -123,14 +141,16 @@ const EditPage: React.FC = () => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    updateData({
-      ...currentUser,
-      name: data.name,
-      email: data.email,
-      profession: data.profession,
-      sex: data.sex,
-      quality: data.quality.map((el) => el.value),
-    });
+    dispatch(
+      UpdateData({
+        ...currentUser,
+        name: data.name,
+        email: data.email,
+        profession: data.profession,
+        sex: data.sex,
+        qualities: data.qualities.map((el) => el.value),
+      })
+    );
     hist.push(`/users/${currentUser?._id}`);
   };
 
@@ -192,11 +212,11 @@ const EditPage: React.FC = () => {
             {qLoad && (
               <MultiSelectField
                 label="Выберите ваши качества"
-                defaultValue={data.quality}
+                defaultValue={data.qualities}
                 options={transQual}
-                name="quality"
+                name="qualities"
                 onChange={handleChange}
-                error={errors.quality ? errors.quality : null}
+                error={errors.qualities ? errors.qualities : null}
               />
             )}
 

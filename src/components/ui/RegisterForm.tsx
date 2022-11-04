@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 
-import { useHistory } from "react-router-dom";
-import { useAppSelector } from "../../redux/store/hooks";
-import { useAuth } from "../../hooks/useAuth";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
 
 import TextField from "../common/form/TextField";
 import SelectField from "../common/form/SelectField";
 import RadioField from "../common/form/RadioField";
 import MultiSelectField from "../common/form/MultiSelectField";
 import CheckBoxField from "../common/form/CheckBoxField";
-import { getQualities } from "../../redux/qualitiesSlice/qualitySlice";
-import { getProfessions } from "../../redux/professionSlice/professionSlice";
+import { getQualities } from "../../store/qualitiesSlice/selectors";
+import { getProfessions } from "../../store/professionsSlice/selectors";
+import { signUp } from "../../store/usersSlice/actions";
 
 type dataState = {
   email: string;
@@ -19,7 +18,7 @@ type dataState = {
   password: string;
   profession: string;
   sex: string;
-  quality: [];
+  qualities: [];
   licence: false;
 };
 
@@ -30,7 +29,7 @@ type QualitiesObj = {
 };
 
 const RegisterForm: React.FC = () => {
-  const history = useHistory();
+  const dispatch = useAppDispatch();
 
   const validateScheme = yup.object().shape({
     licence: yup
@@ -40,7 +39,7 @@ const RegisterForm: React.FC = () => {
         "Вы не сможете продолжить, если не подтвердите лицензионное соглашение"
       ),
 
-    quality: yup.array().min(1, "Хотя бы одно качество должно быть выбрано"),
+    qualities: yup.array().min(1, "Хотя бы одно качество должно быть выбрано"),
 
     sex: yup.string().required("Пол обязательно должен быть выбран"),
 
@@ -79,7 +78,7 @@ const RegisterForm: React.FC = () => {
     password: "",
     profession: "",
     sex: "",
-    quality: [],
+    qualities: [],
     licence: false,
   });
 
@@ -89,11 +88,9 @@ const RegisterForm: React.FC = () => {
     password?: string;
     profession?: string;
     sex?: string;
-    quality?: string;
+    qualities?: string;
     licence?: string;
   }>({});
-
-  const { signUp } = useAuth();
 
   const professions = useAppSelector(getProfessions());
   const qualities = useAppSelector(getQualities());
@@ -134,19 +131,13 @@ const RegisterForm: React.FC = () => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return null;
-    const { quality } = data;
+    const { qualities } = data;
 
     const newData = {
       ...data,
-      quality: quality.map((qu: QualitiesObj) => qu.value),
+      qualities: qualities.map((qu: QualitiesObj) => qu.value),
     };
-
-    try {
-      await signUp(newData);
-      history.push("/");
-    } catch (error: any) {
-      setError(error);
-    }
+    dispatch(signUp(newData));
   };
 
   return (
@@ -198,11 +189,11 @@ const RegisterForm: React.FC = () => {
       />
       <MultiSelectField
         label="Выберите ваши качества"
-        defaultValue={data.quality}
+        defaultValue={data.qualities}
         options={qualitiesList}
-        name="quality"
+        name="qualities"
         onChange={handleChange}
-        error={error.quality ? error.quality : null}
+        error={error.qualities ? error.qualities : null}
       />
       <CheckBoxField
         name="licence"

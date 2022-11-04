@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAppSelector } from "../../store/hooks";
+import { getLogged } from "../../store/usersSlice/selectors";
 import NavProfile from "./NavProfile";
 
 const NavBar: React.FC = () => {
-  const { currentUser } = useAuth();
+  const logged = useAppSelector(getLogged);
 
   return (
     <nav className="navbar bg-light mb-3">
@@ -14,7 +15,7 @@ const NavBar: React.FC = () => {
             Menu
           </Link>
 
-          {currentUser && (
+          {logged && (
             <Link className="nav-link" to="/users">
               Users
             </Link>
@@ -22,7 +23,7 @@ const NavBar: React.FC = () => {
         </ul>
 
         <div className="d-flex">
-          {currentUser ? (
+          {logged ? (
             <NavProfile />
           ) : (
             <Link className="nav-link" to="/login">

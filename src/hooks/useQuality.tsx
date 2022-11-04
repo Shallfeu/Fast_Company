@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { toast } from "react-toastify";
 
-import qualitieService from "../services/qualityService";
+import qualitieService from "../services/qualitiesService";
 
 type IQuality = {
   _id: string;

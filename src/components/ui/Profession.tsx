@@ -1,6 +1,6 @@
 import React from "react";
-import { useAppSelector } from "../../redux/store/hooks";
-import { getProfessionById } from "../../redux/professionSlice/professionSlice";
+import { useAppSelector } from "../../store/hooks";
+import { getProfessionById } from "../../store/professionsSlice/selectors";
 
 type ProfessionProps = {
   id: string;

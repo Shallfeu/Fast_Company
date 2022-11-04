@@ -102,6 +102,7 @@
     "@typescript-eslint/no-use-before-define": "off",
     "react-hooks/rules-of-hooks": "off",
     "no-restricted-syntax": "off",
-    "react/destructuring-assignment": "off"
+    "react/destructuring-assignment": "off",
+    "import/extensions": "off"
   }
 }

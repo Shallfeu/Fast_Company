@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { IUser } from "../store/usersSlice/slice";
 import localStorageService from "../services/localStorageService";
 import userService from "../services/userService";
 
@@ -16,26 +17,11 @@ type IAuthContext = {
   signIn: ({ email, password }: { email: string; password: string }) => void;
   updateData: (data: any) => void;
   logOut: () => void;
-  currentUser: User | null;
+  currentUser: IUser | null;
 };
 
 type Provider = {
   children?: JSX.Element | JSX.Element[];
-};
-
-export type User = {
-  completedMeetings: number;
-  email: string;
-  image: string;
-  licence: boolean;
-  name: string;
-  password: string;
-  profession: string;
-  quality: string[];
-  rate: number;
-  sex: string;
-  _id: string;
-  bookmark: boolean;
 };
 
 export const httpAuth = axios.create({
@@ -56,7 +42,7 @@ const AuthContext = createContext<IAuthContext>({
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<Provider> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const history = useHistory();

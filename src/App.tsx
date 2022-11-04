@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -10,21 +10,11 @@ import NavBar from "./components/ui/NavBar";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import LogOut from "./layouts/LogOut";
-
-import { loadQualities } from "./redux/qualitiesSlice/qualitySlice";
-import { useAppDispatch } from "./redux/store/hooks";
-import { loadProfessions } from "./redux/professionSlice/professionSlice";
+import AppLoader from "./components/ui/hoc/AppLoader";
 
 const App: React.FC = () => {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(loadQualities());
-    dispatch(loadProfessions());
-  }, []);
-
   return (
-    <div>
+    <AppLoader>
       <AuthProvider>
         <NavBar />
         <Switch>
@@ -37,7 +27,7 @@ const App: React.FC = () => {
       </AuthProvider>
 
       <ToastContainer />
-    </div>
+    </AppLoader>
   );
 };
 

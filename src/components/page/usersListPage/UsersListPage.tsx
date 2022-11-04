@@ -8,35 +8,26 @@ import SearchStatus from "../../ui/SearchStatus";
 import UsersTable from "../../ui/UsersTable";
 import { ProfProps } from ".";
 
-import { useUsers } from "../../../hooks/useUsers";
-import { useAuth } from "../../../hooks/useAuth";
-import { useAppSelector } from "../../../redux/store/hooks";
+import { useAppSelector } from "../../../store/hooks";
 import {
   getProfessions,
   getProfessionsLoading,
-} from "../../../redux/professionSlice/professionSlice";
-
-export type StateData = {
-  _id: string;
-  email: string;
-  name: string;
-  quality: string[];
-  profession: string;
-  completedMeetings: number;
-  rate: number;
-  bookmark: boolean;
-  sex: string;
-};
+} from "../../../store/professionsSlice/selectors";
+import {
+  getCurrentUserId,
+  getUsers,
+} from "../../../store/usersSlice/selectors";
+import { IUser } from "../../../store/usersSlice/slice";
 
 const UsersListPage: React.FC = () => {
   const pageSize = 4;
 
-  const { currentUser } = useAuth();
+  const currentUser = useAppSelector(getCurrentUserId);
 
   const professions = useAppSelector(getProfessions());
   const pLoad = useAppSelector(getProfessionsLoading());
 
-  const { users } = useUsers();
+  const users = useAppSelector(getUsers);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -58,8 +49,9 @@ const UsersListPage: React.FC = () => {
     setCurrentPage(1);
   }, [selectedProf]);
 
+  if (!users) return <>Loading...</>;
   const handleToggleMark = (userId: string) => {
-    const newArray = users.map((user) => {
+    const newArray = users?.map((user) => {
       if (user._id === userId) {
         user.bookmark = !user.bookmark;
       }
@@ -84,7 +76,7 @@ const UsersListPage: React.FC = () => {
     setCurrentPage(currentPage - 1);
   };
 
-  const fillterUsers = (data: StateData[]) => {
+  const fillterUsers = (data: IUser[]) => {
     const filteredUsers = selectedProf
       ? data.filter((user) => user.profession === selectedProf._id)
       : searchQuery
@@ -92,7 +84,7 @@ const UsersListPage: React.FC = () => {
           user.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
       : data;
-    if (currentUser) return data.filter((user) => user._id !== currentUser._id);
+    if (currentUser) return data.filter((user) => user._id !== currentUser);
 
     return filteredUsers;
   };

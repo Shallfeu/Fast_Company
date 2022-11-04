@@ -39,12 +39,12 @@ const useMockData = () => {
     try {
       /* eslint-disable-next-line */
       for (const prof of professons) {
-        await httpService.put(`profession/${prof._id}`, prof);
+        await httpService.put(`professions/${prof._id}`, prof);
         incrementCount();
       }
       /* eslint-disable-next-line */
       for (const qual of qualities) {
-        await httpService.put(`quality/${qual._id}`, qual);
+        await httpService.put(`qualities/${qual._id}`, qual);
         incrementCount();
       }
       /* eslint-disable-next-line */

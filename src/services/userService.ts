@@ -1,7 +1,7 @@
 import httpService from "./httpService";
 import localStorageService from "./localStorageService";
 
-const userEndPoint = "user/";
+const userEndPoint = "users/";
 
 const userService = {
   fetchAll: async () => {
@@ -15,6 +15,7 @@ const userService = {
   },
 
   update: async (payload: any) => {
+    console.log(payload);
     const { data } = await httpService.patch(
       userEndPoint + payload._id,
       payload

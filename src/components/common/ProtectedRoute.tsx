@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAppSelector } from "../../store/hooks";
+import { getLogged } from "../../store/usersSlice/selectors";
 
 type ProtectedRouteProps = {
   path: string;
@@ -14,13 +15,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   ...rest
 }) => {
-  const { currentUser } = useAuth();
+  const logged = useAppSelector(getLogged);
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (!currentUser)
+        if (!logged)
           return (
             <Redirect
               to={{ pathname: "/login", state: { from: props.location } }}

@@ -2,15 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 
-import { StateData } from "../../page/usersListPage/UsersListPage";
 import { ColumnProp } from "./Table";
+import { IUser } from "../../../store/usersSlice/slice";
 
 type TableBodyProps = {
-  data: StateData[];
+  data: IUser[];
   columns: any;
 };
 
-const renderContent = (item: StateData, column: ColumnProp) => {
+const renderContent = (item: IUser, column: ColumnProp) => {
   if (column.component) {
     if (typeof column.component === "function") {
       return column.component(item);

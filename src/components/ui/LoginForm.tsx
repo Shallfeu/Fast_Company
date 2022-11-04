@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import * as yup from "yup";
 
-import { useAuth } from "../../hooks/useAuth";
-
 import CheckBoxField from "../common/form/CheckBoxField";
 import TextField from "../common/form/TextField";
+import { useAppDispatch } from "../../store/hooks";
+import { signIn } from "../../store/usersSlice/actions";
 
 type dataState = {
   email: string;
@@ -15,7 +15,7 @@ type dataState = {
 
 const LoginForm: React.FC = () => {
   const history = useHistory<any>();
-  const { signIn } = useAuth();
+  const dispatch = useAppDispatch();
 
   const validateScheme = yup.object().shape({
     password: yup
@@ -68,21 +68,12 @@ const LoginForm: React.FC = () => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return null;
-    try {
-      signIn(data);
-      if (
-        history.location.state &&
-        history.location.state.from.pathname !== "/login"
-      )
-        history.push(history.location.state.from.pathname);
-      else history.push("/");
-    } catch (error: any) {
-      setError(error);
-    }
+    const redirect = history?.location?.state?.from?.pathname;
+    dispatch(signIn({ ...data, redirect }));
   };
 
   if (error.manyAttempts) console.log("dfgdf");
