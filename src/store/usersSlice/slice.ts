@@ -58,6 +58,7 @@ const userSlice = createSlice({
     UsersReceived(state, { payload }: PayloadAction<IUser[]>) {
       state.loading = false;
       state.dataLoaded = true;
+      state.error = null;
       state.items = payload;
     },
 

@@ -1,5 +1,5 @@
-export function date(time: string) {
-  const datePost = new Date(parseInt(time, 10));
+export function date(time: number) {
+  const datePost = new Date(time);
   const dateNow = new Date();
   const months: {} = {
     "0": "January",

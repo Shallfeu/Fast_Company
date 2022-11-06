@@ -1,28 +1,43 @@
 import { orderBy } from "lodash";
-import React from "react";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-import { useComment } from "../../hooks/useComment";
+import {
+  getCommentsLoading,
+  getComments,
+} from "../../store/commentsSlice/selectors";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 import CommentForm from "../common/comments/CommentForm";
 import CommentsList from "../common/comments/CommentsList";
+import {
+  createComment,
+  deleteComment,
+  loadComments,
+} from "../../store/commentsSlice/actions";
 
-export type CommentState = {
-  _id: string;
+interface Param {
   userId: string;
-  pageId: string;
-  content: string;
-  created_at: string;
-};
+}
 
 const Comments: React.FC = () => {
-  const { createComment, comments, deleteComment } = useComment();
+  const { userId } = useParams<Param>();
+  const dispatch = useAppDispatch();
+
+  const loading = useAppSelector(getCommentsLoading());
+
+  const comments = useAppSelector(getComments());
+
+  useEffect(() => {
+    dispatch(loadComments(userId));
+  }, [userId]);
 
   const handleSubmit = (data: { content: string }) => {
-    createComment(data);
+    dispatch(createComment({ pageId: userId, ...data }));
   };
 
   const handleDelete = (commentId: string) => {
-    deleteComment(commentId);
+    dispatch(deleteComment(commentId));
   };
 
   const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
@@ -41,7 +56,11 @@ const Comments: React.FC = () => {
             <h5 className="card-title">
               <span>Comments</span>
             </h5>
-            <CommentsList comments={sortedComments} onDelete={handleDelete} />
+            {!loading ? (
+              <CommentsList comments={sortedComments} onDelete={handleDelete} />
+            ) : (
+              <>Loading...</>
+            )}
           </div>
         </div>
       )}

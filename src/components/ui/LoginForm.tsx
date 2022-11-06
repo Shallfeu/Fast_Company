@@ -4,8 +4,9 @@ import * as yup from "yup";
 
 import CheckBoxField from "../common/form/CheckBoxField";
 import TextField from "../common/form/TextField";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { signIn } from "../../store/usersSlice/actions";
+import { getAuthErrors } from "../../store/usersSlice/selectors";
 
 type dataState = {
   email: string;
@@ -42,6 +43,8 @@ const LoginForm: React.FC = () => {
     password: "",
     stayOn: false,
   });
+
+  const loginError = useAppSelector(getAuthErrors);
 
   const [error, setError] = useState<{
     email?: string;
@@ -102,11 +105,7 @@ const LoginForm: React.FC = () => {
         Оставаться в сети
       </CheckBoxField>
 
-      {error.manyAttempts ? (
-        <p className="text-danger">{error.manyAttempts}</p>
-      ) : (
-        ""
-      )}
+      {loginError ? <p className="text-danger">{loginError}</p> : ""}
 
       <button
         type="submit"

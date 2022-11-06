@@ -14,6 +14,7 @@ import authService from "../../services/authService";
 import localStorageService from "../../services/localStorageService";
 import { randomInt } from "../../utils/randomInt";
 import { customHistory } from "../../utils/history";
+import { generateAuthError } from "../../utils/genarateAutherror";
 
 const AuthRequest = createAction("users/AuthRequest");
 const CreateUserRequest = createAction("users/CreateUserRequest");
@@ -48,7 +49,13 @@ export const signIn =
       if (redirect) customHistory.push(redirect);
       else customHistory.push("/users");
     } catch (error: any) {
-      dispatch(AuthRequestFailed(error.message));
+      const { code, message } = error.response.data.error;
+      if (code === 400) {
+        const errorMessage = generateAuthError(message);
+        dispatch(AuthRequestFailed(errorMessage));
+      } else {
+        dispatch(AuthRequestFailed(error.message));
+      }
     }
   };
 
@@ -76,7 +83,13 @@ export const signUp =
         })
       );
     } catch (error: any) {
-      dispatch(AuthRequestFailed(error.message));
+      const { code, message } = error.response.data.error;
+      if (code === 400) {
+        const errorMessage = generateAuthError(message);
+        dispatch(AuthRequestFailed(errorMessage));
+      } else {
+        dispatch(AuthRequestFailed(error.message));
+      }
     }
   };
 

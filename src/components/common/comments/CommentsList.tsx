@@ -1,17 +1,10 @@
 import React from "react";
+import { IComment } from "../../../store/commentsSlice/slice";
 
 import Comment from "./Comment";
 
-export type CommentsData = {
-  _id: string;
-  userId: string;
-  pageId: string;
-  content: string;
-  created_at: string;
-};
-
 type CommentsListProps = {
-  comments: CommentsData[];
+  comments: IComment[];
   onDelete: (id: string) => void;
 };
 
@@ -24,7 +17,7 @@ const CommentsList: React.FC<CommentsListProps> = ({ comments, onDelete }) => {
           id={comment._id}
           onDelete={onDelete}
           userId={comment.userId}
-          time={comment["created_at" as keyof typeof comment]}
+          time={comment.created_at}
           content={comment.content}
         />
       ))}

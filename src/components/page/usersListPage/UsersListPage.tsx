@@ -50,6 +50,7 @@ const UsersListPage: React.FC = () => {
   }, [selectedProf]);
 
   if (!users) return <>Loading...</>;
+
   const handleToggleMark = (userId: string) => {
     const newArray = users?.map((user) => {
       if (user._id === userId) {
@@ -103,7 +104,7 @@ const UsersListPage: React.FC = () => {
   return (
     <div className="d-flex">
       <div className="d-flex flex-column flex-shrink-o p-3">
-        {professions && pLoad && (
+        {professions && !pLoad && (
           <>
             <GroupList
               selectedItem={selectedProf}

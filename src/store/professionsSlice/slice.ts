@@ -1,30 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-type ProfessionState = {
+type ProfessionsState = {
   items: { name: string; _id: string }[] | null;
   loading: boolean;
   error: string | null;
   lastFetch: number | null;
 };
 
-const initialState: ProfessionState = {
+const initialState: ProfessionsState = {
   items: null,
   loading: false,
   error: null,
   lastFetch: null,
 };
 
-const ProfessionSlice = createSlice({
+const ProfessionsSlice = createSlice({
   name: "professions",
   initialState,
   reducers: {
     professionsRequested(state) {
-      state.loading = false;
+      state.loading = true;
     },
 
     professionsReceived(state, action: PayloadAction<[]>) {
-      state.loading = true;
+      state.loading = false;
       state.lastFetch = Date.now();
       state.items = action.payload;
     },
@@ -55,6 +55,6 @@ export const {
   professionsRequested,
   professionsReceived,
   professionsRequestedFailed,
-} = ProfessionSlice.actions;
+} = ProfessionsSlice.actions;
 
-export default ProfessionSlice.reducer;
+export default ProfessionsSlice.reducer;

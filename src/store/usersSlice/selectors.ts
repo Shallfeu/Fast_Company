@@ -19,3 +19,4 @@ export const getLogged = (state: RootState) => state.users.logged;
 export const getUsersLoadingStatus = (state: RootState) => state.users.loading;
 export const getDataStatus = (state: RootState) => state.users.dataLoaded;
 export const getCurrentUserId = (state: RootState) => state.users.auth?.userId;
+export const getAuthErrors = (state: RootState) => state.users.error;

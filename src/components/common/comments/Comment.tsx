@@ -10,7 +10,7 @@ import {
 type CommentProps = {
   userId: string;
   id: string;
-  time: string;
+  time: number;
   content: string;
   onDelete: (commentId: string) => void;
 };

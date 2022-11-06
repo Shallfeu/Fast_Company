@@ -20,11 +20,11 @@ const qualitySlice = createSlice({
   initialState,
   reducers: {
     qualitiesRequested(state) {
-      state.loading = false;
+      state.loading = true;
     },
 
     qualitiesReceived(state, action: PayloadAction<[]>) {
-      state.loading = true;
+      state.loading = false;
       state.lastFetch = Date.now();
       state.items = action.payload;
     },

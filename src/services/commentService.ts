@@ -1,9 +1,9 @@
-import { IComment } from "../hooks/useComment";
+import { IComment } from "../store/commentsSlice/slice";
 import httpService from "./httpService";
 
 const commentEndPoint = "comment/";
 
-const commentService = {
+const commentsService = {
   create: async (payload: IComment) => {
     const { data } = await httpService.put(
       commentEndPoint + payload._id,
@@ -28,4 +28,4 @@ const commentService = {
   },
 };
 
-export default commentService;
+export default commentsService;

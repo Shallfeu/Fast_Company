@@ -20,7 +20,7 @@ const QualitiesList: React.FC<QualitiesListProps> = ({ qualities }) => {
   const loading = useAppSelector(getQualitiesLoading());
   const qualitiesList = useAppSelector(getQualitiesByIds(qualities));
 
-  if (!loading) return <>Loading...</>;
+  if (loading) return <>Loading...</>;
   return (
     <>
       {qualitiesList.map((quality) => (
