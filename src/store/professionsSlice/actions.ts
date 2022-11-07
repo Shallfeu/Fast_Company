@@ -1,8 +1,8 @@
 import professionService from "../../services/professionService";
 import {
-  professionsRequested,
-  professionsReceived,
-  professionsRequestedFailed,
+  ProfessionsRequested,
+  ProfessionsReceived,
+  ProfessionsRequestedFailed,
 } from "./slice";
 
 function isOutdate(date: number) {
@@ -14,11 +14,11 @@ export const loadProfessions = () => async (dispatch: any, getState: any) => {
   const { lastFetch } = getState().professions;
   if (isOutdate(lastFetch)) {
     try {
-      dispatch(professionsRequested());
+      dispatch(ProfessionsRequested());
       const { content } = await professionService.fetchAll();
-      dispatch(professionsReceived(content));
+      dispatch(ProfessionsReceived(content));
     } catch (error: any) {
-      dispatch(professionsRequestedFailed(error.message));
+      dispatch(ProfessionsRequestedFailed(error.message));
     }
   }
 };

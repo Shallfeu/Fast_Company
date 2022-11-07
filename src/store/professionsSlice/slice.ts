@@ -19,17 +19,17 @@ const ProfessionsSlice = createSlice({
   name: "professions",
   initialState,
   reducers: {
-    professionsRequested(state) {
+    ProfessionsRequested(state) {
       state.loading = true;
     },
 
-    professionsReceived(state, action: PayloadAction<[]>) {
+    ProfessionsReceived(state, action: PayloadAction<[]>) {
       state.loading = false;
       state.lastFetch = Date.now();
       state.items = action.payload;
     },
 
-    professionsRequestedFailed(state, action) {
+    ProfessionsRequestedFailed(state, action) {
       state.loading = false;
       state.error = action.payload;
     },
@@ -52,9 +52,9 @@ const ProfessionsSlice = createSlice({
 });
 
 export const {
-  professionsRequested,
-  professionsReceived,
-  professionsRequestedFailed,
+  ProfessionsRequested,
+  ProfessionsReceived,
+  ProfessionsRequestedFailed,
 } = ProfessionsSlice.actions;
 
 export default ProfessionsSlice.reducer;

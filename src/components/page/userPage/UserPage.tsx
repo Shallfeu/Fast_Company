@@ -4,7 +4,6 @@ import UserCard from "../../ui/UserCard";
 import QualitiesCard from "../../ui/QualitiesCard";
 import MeetingsCard from "../../ui/MeetingsCard";
 import Comments from "../../ui/Comments";
-import { CommentProvider } from "../../../hooks/useComment";
 import { useAppSelector } from "../../../store/hooks";
 import { getUserById } from "../../../store/usersSlice/selectors";
 
@@ -28,9 +27,7 @@ const UserPage: React.FC<UserPageProps> = ({ id }) => {
           <MeetingsCard value={user.completedMeetings} />
         </div>
         <div className="col-md-8">
-          <CommentProvider>
-            <Comments />
-          </CommentProvider>
+          <Comments />
         </div>
       </div>
     </div>

@@ -19,17 +19,17 @@ const qualitySlice = createSlice({
   name: "qualities",
   initialState,
   reducers: {
-    qualitiesRequested(state) {
+    QualitiesRequested(state) {
       state.loading = true;
     },
 
-    qualitiesReceived(state, action: PayloadAction<[]>) {
+    QualitiesReceived(state, action: PayloadAction<[]>) {
       state.loading = false;
       state.lastFetch = Date.now();
       state.items = action.payload;
     },
 
-    qualitiesRequestedFailed(state, action) {
+    QualitiesRequestedFailed(state, action) {
       state.loading = false;
       state.error = action.payload;
     },
@@ -52,9 +52,9 @@ const qualitySlice = createSlice({
 });
 
 export const {
-  qualitiesRequested,
-  qualitiesReceived,
-  qualitiesRequestedFailed,
+  QualitiesRequested,
+  QualitiesReceived,
+  QualitiesRequestedFailed,
 } = qualitySlice.actions;
 
 export default qualitySlice.reducer;

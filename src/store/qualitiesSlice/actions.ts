@@ -1,20 +1,20 @@
 import qualitiesService from "../../services/qualitiesService";
 import { isOutdate } from "../../utils/isOutdate";
 import {
-  qualitiesRequested,
-  qualitiesReceived,
-  qualitiesRequestedFailed,
+  QualitiesRequested,
+  QualitiesReceived,
+  QualitiesRequestedFailed,
 } from "./slice";
 
 export const loadQualities = () => async (dispatch: any, getState: any) => {
   const { lastFetch } = getState().qualities;
   if (isOutdate(lastFetch)) {
-    dispatch(qualitiesRequested());
+    dispatch(QualitiesRequested());
     try {
       const { content } = await qualitiesService.fetchAll();
-      dispatch(qualitiesReceived(content));
+      dispatch(QualitiesReceived(content));
     } catch (error: any) {
-      dispatch(qualitiesRequestedFailed(error.message));
+      dispatch(QualitiesRequestedFailed(error.message));
     }
   }
 };
