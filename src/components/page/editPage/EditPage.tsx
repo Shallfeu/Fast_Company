@@ -37,7 +37,7 @@ const EditPage: React.FC = () => {
     profession: string;
     sex: string;
     qualities: { label: string; value: string; color: string }[];
-  } | null>();
+  } | null>(null);
 
   const [errors, setErrors] = useState<{
     name?: string;
@@ -52,8 +52,6 @@ const EditPage: React.FC = () => {
 
   const professions = useAppSelector(getProfessions());
   const pLoad = useAppSelector(getProfessionsLoading());
-
-  if (!qualities || !professions) return <>Loading...</>;
 
   const currentUser = useAppSelector(getCurrentUserData);
 
@@ -79,7 +77,7 @@ const EditPage: React.FC = () => {
   }, [data]);
 
   useEffect(() => {
-    if (qLoad && pLoad && currentUser && !data) {
+    if (!qLoad && !pLoad && currentUser && !data) {
       setData({
         name: currentUser.name,
         email: currentUser.email,
@@ -91,8 +89,6 @@ const EditPage: React.FC = () => {
       });
     }
   }, []);
-
-  if (!data) return <>loading</>;
 
   if (currentUser?._id !== userId)
     return <Redirect to={`/users/${currentUser?._id}/edit`} />;
@@ -144,15 +140,18 @@ const EditPage: React.FC = () => {
     dispatch(
       UpdateData({
         ...currentUser,
-        name: data.name,
-        email: data.email,
-        profession: data.profession,
-        sex: data.sex,
-        qualities: data.qualities.map((el) => el.value),
+        name: data?.name,
+        email: data?.email,
+        profession: data?.profession,
+        sex: data?.sex,
+        qualities: data?.qualities.map((el) => el.value),
       })
     );
     hist.push(`/users/${currentUser?._id}`);
   };
+
+  if (!data) return <>Loading...</>;
+  if (!qualities || !professions) return <>Loading...</>;
 
   const isValid = Object.keys(errors).length === 0;
   const transQual = transformQual(qualities);
@@ -209,7 +208,7 @@ const EditPage: React.FC = () => {
               onChange={handleChange}
             />
 
-            {qLoad && (
+            {!qLoad && (
               <MultiSelectField
                 label="Выберите ваши качества"
                 defaultValue={data.qualities}
