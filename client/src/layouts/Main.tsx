@@ -7,6 +7,7 @@ const Main: React.FC = () => {
   const handleClick = () => {
     initialize();
   };
+
   return (
     <div className="container mt-5">
       <h1>Main page</h1>

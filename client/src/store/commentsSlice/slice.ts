@@ -22,7 +22,7 @@ const initialState: CommentsState = {
 };
 
 const CommentsSlice = createSlice({
-  name: "Commentss",
+  name: "comments",
   initialState,
   reducers: {
     CommentsRequested(state) {

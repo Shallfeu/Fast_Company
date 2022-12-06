@@ -27,28 +27,20 @@ type UserState = {
   dataLoaded: boolean;
 };
 
-const initialState: UserState = localStorageService.getAccessToken()
-  ? {
-      items: null,
-      loading: true,
-      error: null,
-      auth: { userId: localStorageService.getUserId() },
-      logged: true,
-      created: true,
-      dataLoaded: false,
-    }
-  : {
-      items: null,
-      loading: false,
-      error: null,
-      auth: null,
-      logged: false,
-      created: false,
-      dataLoaded: false,
-    };
+const initialState: UserState = {
+  items: null,
+  loading: false,
+  error: null,
+  auth: localStorageService.getAccessToken()
+    ? { userId: localStorageService.getUserId() }
+    : null,
+  logged: true,
+  created: true,
+  dataLoaded: false,
+};
 
 const userSlice = createSlice({
-  name: "Users",
+  name: "users",
   initialState,
   reducers: {
     UsersRequested(state) {
